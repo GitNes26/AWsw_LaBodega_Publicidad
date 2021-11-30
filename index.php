@@ -21,7 +21,7 @@ if (isset($_COOKIE["sesion"])) {
     <!-- JQuery 6 -->
     <script src="<?php echo($DIST_PATH) ?>/jquery-3.6.0/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap 5.1.3 -->
-    <link rel="stylesheet" href="<?php echo($DIST_PATH) ?>/bootstrap-5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo($DIST_PATH) ?>/Bootstrap-5.1.3/css/bootstrap.min.css">
     <!-- AdminLTE-3 -->
     <link rel="stylesheet" href="<?php echo($DIST_PATH) ?>/AdminLTE-3/css/adminlte.min.css">
     <!-- Iconos - font-awesome6 -->
@@ -73,7 +73,7 @@ if (isset($_COOKIE["sesion"])) {
     <!-- JQuery 6 -->
     <script src="<?php echo($DIST_PATH) ?>/jquery-3.6.0/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap 5.1.3 -->
-    <script src="<?php echo($DIST_PATH) ?>/bootstrap-5.1.3/js/bootstrap.min.js"></script>
+    <script src="<?php echo($DIST_PATH) ?>/Bootstrap-5.1.3/js/bootstrap.min.js"></script>
     <!-- AdminLTE-3 -->
     <script src="<?php echo($DIST_PATH) ?>/AdminLTE-3/js/adminlte.min.js"></script>
 

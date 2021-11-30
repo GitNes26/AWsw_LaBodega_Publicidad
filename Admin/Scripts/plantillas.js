@@ -212,42 +212,18 @@ function cambiarTextosMarquee() {
             texto_marquee.css("background-color","#000");
             texto_marquee.css("color","#FFF");
          } else {
-            hoy = moment().format("YYYY-MM-DD");
-            dia_actual = moment(hoy,"YYYY-MM-DD");
-            dia_inicial_promo = moment(lista_textos[0].text_fecha_ini,"YYYY-MM-DD");
-            dia_final_promo = moment(lista_textos[0].text_fecha_fin,"YYYY-MM-DD");
-            ya_inicio_dia_promo = dia_inicial_promo.isBefore(dia_actual);
-            ya_acabo_dia_promo = dia_actual.isAfter(dia_final_promo);
-            mismo_dia = dia_inicial_promo.isSame(dia_actual);
+            hoy = moment().format("YYYY-MM-DD HH:mm:ss");
+            momento_actual = moment(hoy);
+            fecha_inicial_promo = moment(`${lista_textos[0].text_fecha_ini} ${lista_textos[0].text_hora_ini}`,"YYYY-MM-DD HH:mm:ss");
+            fecha_final_promo = moment(`${lista_textos[0].text_fecha_fin} ${lista_textos[0].text_hora_fin}`,"YYYY-MM-DD HH:mm:ss");
 
-            if (mismo_dia) {
-               hora = moment().format("HH:mm:ss");
-               let hora_actual = moment(hora,"HH:mm:ss");
-               let hora_inicial_promo = moment(lista_textos[0].text_hora_ini,"HH:mm:ss");
-               let hora_final_promo = moment(lista_textos[0].text_hora_fin,"HH:mm:ss");
+            ya_inicio_dia_promo = fecha_inicial_promo.isBefore(momento_actual);
+            ya_acabo_dia_promo = momento_actual.isAfter(fecha_final_promo);
 
-               inicia_promo = hora_inicial_promo.isBefore(hora_actual) || hora_actual.isSame(hora_inicial_promo) ? true : false;
-               final_promo = hora_actual.isAfter(hora_final_promo)
-               
-               if (inicia_promo && !final_promo) {
-                  texto_marquee.text(`${lista_textos[0].text_spot}`);
-                  texto_marquee.css("background-color",lista_textos[0].text_fondo_color);
-                  texto_marquee.css("color",lista_textos[0].text_color);
-               }
-            } else {
-               if (ya_inicio_dia_promo && !ya_acabo_dia_promo) {
-                  hora = moment().format("HH:mm:ss");
-                  let hora_actual = moment(hora,"HH:mm:ss");
-                  let hora_final_promo = moment(lista_textos[0].text_hora_fin,"HH:mm:ss");
-                  
-                  final_promo = hora_final_promo.isBefore(hora_actual)
-                  
-                  if (!final_promo) {
-                     texto_marquee.text(`${lista_textos[0].text_spot}`);
-                     texto_marquee.css("background-color",lista_textos[0].text_fondo_color);
-                     texto_marquee.css("color",lista_textos[0].text_color);
-                  }
-               }
+            if (ya_inicio_dia_promo && !ya_acabo_dia_promo) {
+               texto_marquee.text(`${lista_textos[0].text_spot}`);
+               texto_marquee.css("background-color",lista_textos[0].text_fondo_color);
+               texto_marquee.css("color",lista_textos[0].text_color);
             }
          }
       } else {
@@ -259,45 +235,20 @@ function cambiarTextosMarquee() {
             texto_marquee.text(`${lista_textos[t].text_spot}`);
             
          } else {
-            hoy = moment().format("YYYY-MM-DD");
-            dia_actual = moment(hoy,"YYYY-MM-DD");
-            dia_inicial_promo = moment(lista_textos[t].text_fecha_ini,"YYYY-MM-DD");
-            dia_final_promo = moment(lista_textos[t].text_fecha_fin,"YYYY-MM-DD");
-            ya_inicio_dia_promo = dia_inicial_promo.isBefore(dia_actual);
-            ya_acabo_dia_promo = dia_actual.isAfter(dia_final_promo);
-            mismo_dia = dia_inicial_promo.isSame(dia_actual);
+            hoy = moment().format("YYYY-MM-DD HH:mm:ss");
+            momento_actual = moment(hoy);
+            fecha_inicial_promo = moment(`${lista_textos[t].text_fecha_ini} ${lista_textos[t].text_hora_ini}`,"YYYY-MM-DD HH:mm:ss");
+            fecha_final_promo = moment(`${lista_textos[t].text_fecha_fin} ${lista_textos[t].text_hora_fin}`,"YYYY-MM-DD HH:mm:ss");
 
-            if (mismo_dia) {
-               hora = moment().format("HH:mm:ss");
-               let hora_actual = moment(hora,"HH:mm:ss");
-               let hora_inicial_promo = moment(lista_textos[t].text_hora_ini,"HH:mm:ss");
-               let hora_final_promo = moment(lista_textos[t].text_hora_fin,"HH:mm:ss");
+            ya_inicio_dia_promo = fecha_inicial_promo.isBefore(momento_actual);
+            ya_acabo_dia_promo = momento_actual.isAfter(fecha_final_promo);
 
-               inicia_promo = hora_inicial_promo.isBefore(hora_actual) || hora_actual.isSame(hora_inicial_promo) ? true : false;
-               final_promo = hora_actual.isAfter(hora_final_promo)
-               
-               if (inicia_promo && !final_promo) {
-                  texto_marquee.text(`${lista_textos[t].text_spot}`);
-                  texto_marquee.css("background-color",lista_textos[t].text_fondo_color);
-                  texto_marquee.css("color",lista_textos[t].text_color);
-               }
-            } else {
-               if (ya_inicio_dia_promo && !ya_acabo_dia_promo) {
-                  hora = moment().format("HH:mm:ss");
-                  let hora_actual = moment(hora,"HH:mm:ss");
-                  let hora_final_promo = moment(lista_textos[t].text_hora_fin,"HH:mm:ss");
-
-                  final_promo = hora_final_promo.isBefore(hora_actual)
-                  
-                  if (!final_promo) {
-                     texto_marquee.text(`${lista_textos[t].text_spot}`);
-                     texto_marquee.css("background-color",lista_textos[t].text_fondo_color);
-                     texto_marquee.css("color",lista_textos[t].text_color);
-                  }
-               }
+            if (ya_inicio_dia_promo && !ya_acabo_dia_promo) {
+               texto_marquee.text(`${lista_textos[t].text_spot}`);
+               texto_marquee.css("background-color",lista_textos[t].text_fondo_color);
+               texto_marquee.css("color",lista_textos[t].text_color);
             }
          }
-         // setTimeout(() => { t++; cambiarTextosMarquee() }, INTERVALO_ENTRE_TEXTOS);
       }
       texto_marquee.marquee({
          //velocidad en milisegundos de la marquesina
@@ -322,6 +273,7 @@ setTimeout(() => {
 // console.log(lista_banhorizontales);
 // console.log(lista_bancompletos);
 // console.log(lista_textos);
+
 cambiarVideo()
 cambiarBanvertical();
 cambiarBanhorizontal();

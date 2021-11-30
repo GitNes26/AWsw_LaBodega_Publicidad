@@ -571,8 +571,6 @@ formulario_modal.on("submit",(e) => {
       if (!validar_campo) return;
       validar_campo = validarInput(input_hora_final,"HORA FINAL");
       if (!validar_campo) return;
-      console.log( input_color_texto.val());
-      console.log( input_color_fondo.val());
       if (input_color_texto.val() == input_color_fondo.val()) {
          mostrarToast("warning","NO pueden ser del mismo color el texto y el fondo, cambia uno.", "center")
          return
