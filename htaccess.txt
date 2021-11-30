@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+#ACTIVAR REWRITE
+RewriteEngine on
+{% comment %} ErrorDocument 404 http://localhost/AWS/amora/admin/404.html {% endcomment %}
+
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^(.*)/(.*) index.php?controlador=$1&accion=$2
+</IfModule>
+
+Options -Indexes
