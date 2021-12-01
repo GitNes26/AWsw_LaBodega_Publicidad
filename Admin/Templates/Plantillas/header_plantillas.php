@@ -1,15 +1,14 @@
 <?php
-if (isset($_COOKIE["sesion"])) {
-   if ($_COOKIE["sesion"] != "activa") {
-       header("location:../index.php");
-       die();
-   }
-} else {
-   header("location:../index.php");
-   die();
-}
+// if (isset($_COOKIE["sesion"])) {
+//    if ($_COOKIE["sesion"] != "activa") {
+//        header("location:../index.php");
+//        die();
+//    }
+// } else {
+//    header("location:../index.php");
+//    die();
+// }
 
-require_once '../Admin/Configurations/globals.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
