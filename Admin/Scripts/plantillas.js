@@ -23,17 +23,18 @@ let lista_banhorizontales = []; bh=0;
 let lista_bancompletos = []; bc=0;
 let lista_textos = []; t=0;
 
-
-const INTERVALO_ENTRE_IMAGENES_BANVERTICALES = 5000;
-const INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES = 7000;
-const INTERVALO_ENTRE_IMAGENES_COMPLETAS = 10000;
-const VELOCIDAD_CINTILLA = 15000;
-const INTERVALO_REFRESCAR_MEDIA= 1000;
-const INTERVALO_UNA_HORA = 60000*60;
+const UN_SEGUNDO = 1000;
+const UN_MINUTO = 60000;
+const INTERVALO_ENTRE_IMAGENES_BANVERTICALES = 5*UN_SEGUNDO;
+const INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES = 7*UN_SEGUNDO;
+const INTERVALO_ENTRE_IMAGENES_COMPLETAS = 10*UN_SEGUNDO;
+const VELOCIDAD_CINTILLA = 15*UN_SEGUNDO;
+const INTERVALO_REFRESCAR_MULTIMEDIA = 15*UN_MINUTO;
+const INTERVALO_UNA_HORA = 60*UN_MINUTO;
 
 function peticionAjax(datos,lista) {
    $.ajax({
-      url: "../Admin/Models/Reproductor/App.php",
+      url: "Admin/Models/Reproductor/App.php",
       type: "POST",
       data: datos,
       dataType: "json",
@@ -125,12 +126,12 @@ function actualizarListas() {
    listaTextos();
 }
 actualizarListas();
-setInterval(() => { actualizarListas(); }, INTERVALO_UNA_HORA);
+setInterval(() => { actualizarListas(); }, INTERVALO_REFRESCAR_MULTIMEDIA);
 
 function cambiarVideo() {
    if (lista_videos.length > 0) {
       if (tag_video.getAttribute("src") == "") {
-         tag_video.setAttribute("src",`../Admin/${lista_videos[0].vid_ruta}`);
+         tag_video.setAttribute("src",`Admin/${lista_videos[0].vid_ruta}`);
          tag_video.play();
          tag_video.addEventListener("ended", () => {
             v++;
@@ -138,14 +139,14 @@ function cambiarVideo() {
          });
       } else {
          if(v >= lista_videos.length) {v=0}
-         tag_video.setAttribute("src",`../Admin/${lista_videos[v].vid_ruta}`);
+         tag_video.setAttribute("src",`Admin/${lista_videos[v].vid_ruta}`);
          tag_video.play();
          tag_video.addEventListener("ended", () => {
             v++;
          });
       }
    } else {
-      tag_video.setAttribute("src",`../Admin/Assets/Archivos_panel/Defaults/aw_video.mp4`);
+      tag_video.setAttribute("src",`Admin/Assets/Archivos_panel/Defaults/aw_video.mp4`);
       tag_video.play();
       tag_video.addEventListener("ended", () => {
          v++;
@@ -157,15 +158,15 @@ function cambiarVideo() {
 function cambiarBanvertical() {
    if (lista_banverticales.length > 0) {
       if (img_banvertical.attr("src") == "") {
-         img_banvertical.attr("src",`../Admin/${lista_banverticales[0].img_ruta}`);
+         img_banvertical.attr("src",`Admin/${lista_banverticales[0].img_ruta}`);
          setTimeout(() => { bv++; cambiarBanvertical() }, INTERVALO_ENTRE_IMAGENES_BANVERTICALES);
       } else {
          if(bv >= lista_banverticales.length) {bv=0}
-         img_banvertical.attr("src",`../Admin/${lista_banverticales[bv].img_ruta}`);
+         img_banvertical.attr("src",`Admin/${lista_banverticales[bv].img_ruta}`);
          setTimeout(() => { bv++; cambiarBanvertical() }, INTERVALO_ENTRE_IMAGENES_BANVERTICALES);
       }
    } else {
-      img_banvertical.attr('src',"../Admin/Assets/Archivos_panel/Defaults/aw_banvertical.png");
+      img_banvertical.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banvertical.png");
       setTimeout(() => { bh=0; cambiarBanvertical() }, INTERVALO_ENTRE_IMAGENES_BANVERTICALES);
    }
 }
@@ -173,15 +174,15 @@ function cambiarBanvertical() {
 function cambiarBanhorizontal() {
    if (lista_banhorizontales.length > 0) {
       if (img_banhorizontal.attr("src") == "") {
-         img_banhorizontal.attr("src",`../Admin/${lista_banhorizontales[0].imgh_ruta}`);
+         img_banhorizontal.attr("src",`Admin/${lista_banhorizontales[0].imgh_ruta}`);
          setTimeout(() => { bh++; cambiarBanhorizontal() }, INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES);
       } else {
          if(bh >= lista_banhorizontales.length) {bh=0}
-         img_banhorizontal.attr("src",`../Admin/${lista_banhorizontales[bh].imgh_ruta}`);
+         img_banhorizontal.attr("src",`Admin/${lista_banhorizontales[bh].imgh_ruta}`);
          setTimeout(() => { bh++; cambiarBanhorizontal() }, INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES);
       }
    } else {
-      img_banhorizontal.attr('src',"../Admin/Assets/Archivos_panel/Defaults/aw_banhorizontal.png");
+      img_banhorizontal.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banhorizontal.png");
       setTimeout(() => { bh=0; cambiarBanhorizontal() }, INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES);
    }
 }
@@ -189,14 +190,14 @@ function cambiarBanhorizontal() {
 function cambiarBancompleto() {
    if (lista_bancompletos.length > 0) {
       if (img_bancompleto.attr("src") == "") {
-         img_bancompleto.attr("src",`../Admin/${lista_bancompletos[0].imgc_ruta}`);
+         img_bancompleto.attr("src",`Admin/${lista_bancompletos[0].imgc_ruta}`);
       } else {
          if(bc >= lista_bancompletos.length) {bc=0}
-         img_bancompleto.attr("src",`../Admin/${lista_bancompletos[bc].imgc_ruta}`);
+         img_bancompleto.attr("src",`Admin/${lista_bancompletos[bc].imgc_ruta}`);
       }
       setTimeout(() => { bc++; cambiarBancompleto() }, INTERVALO_ENTRE_IMAGENES_COMPLETAS);
    } else {
-      img_bancompleto.attr('src',"../Admin/Assets/Archivos_panel/Defaults/aw_bancompleto.png");
+      img_bancompleto.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_bancompleto.png");
       setTimeout(() => { bc=0; cambiarBancompleto() }, INTERVALO_ENTRE_IMAGENES_COMPLETAS);
    }
 }
@@ -279,6 +280,6 @@ cambiarBanvertical();
 cambiarBanhorizontal();
 cambiarBancompleto();
 cambiarTextosMarquee()
-}, 1000);
+}, UN_SEGUNDO);
 
 

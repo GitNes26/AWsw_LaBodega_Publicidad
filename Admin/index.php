@@ -39,7 +39,7 @@ require_once "./Templates/Index/side_bar_index.php";
                $Cliente = new Cliente();
                foreach ($Cliente->mostrarClientesYCantidadesContenido() as $objCliente) {
                   echo "
-                  <div class='col-4'>
+                  <div class='col-md-4 col-sm-12'>
                   <div class='card card-outline card-success'>
                      <div class='card-header'>
                         <h3 class='card-title fw-bold'>$objCliente[empresa]</h3>

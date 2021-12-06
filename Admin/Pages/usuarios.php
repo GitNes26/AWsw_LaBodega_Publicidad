@@ -52,8 +52,8 @@ require_once "../Templates/side_bar.php";
                            <td class='align-middle'>$objUsuario[usr_nombre]</td>
                            <td class='align-middle'>$objUsuario[usr_pass_nor]</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar_usuario' data-bs-toggle='modal' data-bs-target='#modal_usuario' data-id='$objUsuario[usr_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
-                              <span class='mx-2'></span>
+                              <button class='btn btn-primary btn_editar_usuario mb-1' data-bs-toggle='modal' data-bs-target='#modal_usuario' data-id='$objUsuario[usr_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <span class='mx-md-2'></span>
                               <button class='btn btn-danger btn_eliminar_usuario' data-id='$objUsuario[usr_id]' data-nombre='$objUsuario[usr_nombre]'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>

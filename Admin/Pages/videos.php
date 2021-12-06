@@ -68,8 +68,8 @@ $Cliente = new Cliente();
                               </td>
                            <td class='align-middle'>$activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objVideo[vid_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
-                              <span class='mx-2'></span>
+                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objVideo[vid_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <span class='mx-md-2'></span>
                               <button class='btn btn-danger btn_eliminar' data-id='$objVideo[vid_id]' data-nombre='$objVideo[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>

@@ -1,10 +1,6 @@
 $(document).ready(() => {
    var tabla_reproductores = $('#tabla_reproductores').DataTable({
-      "responsive": {
-         details: {
-            type: 'column'
-         }
-      },
+      "responsive": true,
       // scrollX: true,
       language: {
          "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/es-mx.json"

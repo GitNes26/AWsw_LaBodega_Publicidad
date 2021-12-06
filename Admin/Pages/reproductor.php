@@ -36,7 +36,6 @@ $Reproductor = new Reproductor();
                   </tr>
                </thead>
                <tbody>
-                  <a href="../../Publicidad/plantilla1.php"></a>
                   <?php
                   error_reporting(0);
                   foreach ($Reproductor->mostrarReproductores() as $objReproductor) {
@@ -47,11 +46,11 @@ $Reproductor = new Reproductor();
                         <tr>
                            <td class='align-middle'>$objReproductor[cli_nom_empresa]</td>
 
-                           <td class='align-middle'><a href='../../Publicidad/plantilla1.php?negocio=$cli_id' target='_blank' class='btn_play_plantilla1' title='Reproducir plantilla 1 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
+                           <td class='align-middle'><a href='../../p1.php?n=$cli_id' target='_blank' class='btn_play_plantilla1' title='Reproducir plantilla 1 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
 
-                           <td class='align-middle'><a href='../../Publicidad/plantilla2.php?negocio=$cli_id' target='_blank' class='btn_play_plantilla2' title='Reproducir plantilla 2 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
+                           <td class='align-middle'><a href='../../p2.php?n=$cli_id' target='_blank' class='btn_play_plantilla2' title='Reproducir plantilla 2 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
 
-                           <td class='align-middle'><a href='../../Publicidad/plantilla3.php?negocio=$cli_id' target='_blank' class='btn_play_plantilla4' title='Reproducir plantilla 4 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
+                           <td class='align-middle'><a href='../../p3.php?n=$cli_id' target='_blank' class='btn_play_plantilla4' title='Reproducir plantilla 4 de $empresa'><i class='fa-solid fa-circle-play fa-3x'></i></a></td>
                         </tr>
                      ";
                   }
