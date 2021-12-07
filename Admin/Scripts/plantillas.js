@@ -23,6 +23,7 @@ let lista_banhorizontales = []; bh=0;
 let lista_bancompletos = []; bc=0;
 let lista_textos = []; t=0;
 
+let vueltas_actualizacion = 1;
 const UN_SEGUNDO = 1000;
 const UN_MINUTO = 60000;
 const INTERVALO_ENTRE_IMAGENES_BANVERTICALES = 5*UN_SEGUNDO;
@@ -32,14 +33,14 @@ const VELOCIDAD_CINTILLA = 15*UN_SEGUNDO;
 const INTERVALO_REFRESCAR_MULTIMEDIA = 15*UN_MINUTO;
 const INTERVALO_UNA_HORA = 60*UN_MINUTO;
 
-function peticionAjax(datos,lista) {
+function peticionAjax(datos,lista,funcion_en_complete) {
    $.ajax({
       url: "Admin/Models/Reproductor/App.php",
       type: "POST",
       data: datos,
       dataType: "json",
       success: (ajaxResponse) => {
-         if (ajaxResponse.Resultado == "correcto")
+         if (ajaxResponse.Resultado == "correcto") {
             switch (lista) {
                case "lista_videos":
                   lista_videos = ajaxResponse.Datos;
@@ -59,73 +60,106 @@ function peticionAjax(datos,lista) {
                default:
                   break;
             }
+         }
+      },
+      complete: () => {
+         if (funcion_en_complete != null)
+            funcion_en_complete();
       }
    })
 }
+function mostrarBlockOutCargando() {
+   Swal.fire({
+      title: 'Cargando...',
+      // html: 'I will close in <b></b> milliseconds.',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+         Swal.showLoading()
+      }
+   })
+}
+function mostrarBlockOutListo() {
+   Swal.fire({
+      title: "LISTO!",
+      timer: 500,
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+         Swal.showLoading()
+      }
+   })
+}
+
 function listaVideos() {
    datos = {
       accion: "lista_videos",
-      plantilla: 1,
       id_ubicacion: Number(id_negocio.val()),
       fecha_inicial: hoy_inicial,
       fecha_final: hoy_final,
    };
    // console.log(datos);
-   peticionAjax(datos,"lista_videos");
+   peticionAjax(datos,"lista_videos",listaBanverticales);
 }
 function listaBanverticales() {
    datos = {
       accion: "lista_banverticales",
-      // plantilla: 1,
       id_ubicacion: Number(id_negocio.val()),
       fecha_inicial: hoy_inicial,
       fecha_final: hoy_final,
    };
    // console.log(datos);
-   peticionAjax(datos,"lista_banverticales");
+   peticionAjax(datos,"lista_banverticales",listaBanhorizontales);
 }
 function listaBanhorizontales() {
    datos = {
       accion: "lista_banhorizontales",
-      // plantilla: 1,
       id_ubicacion: Number(id_negocio.val()),
       fecha_inicial: hoy_inicial,
       fecha_final: hoy_final,
    };
    // console.log(datos);
-   peticionAjax(datos,"lista_banhorizontales");
+   peticionAjax(datos,"lista_banhorizontales",listaBancompletos);
 }
 function listaBancompletos() {
    datos = {
       accion: "lista_bancompletos",
-      // plantilla: 1,
       id_ubicacion: Number(id_negocio.val()),
       fecha_inicial: hoy_inicial,
       fecha_final: hoy_final,
    };
    // console.log(datos);
-   peticionAjax(datos,"lista_bancompletos");
+   peticionAjax(datos,"lista_bancompletos",listaTextos);
 }
 function listaTextos() {
    datos = {
       accion: "lista_textos",
-      // plantilla: 1,
       id_ubicacion: Number(id_negocio.val()),
       fecha_inicial: hoy_inicial,
       fecha_final: hoy_final,
    };
    // console.log(datos);
-   peticionAjax(datos,"lista_textos");
+   if (vueltas_actualizacion == 1)
+      peticionAjax(datos,"lista_textos",empezarAreproducir);
+   peticionAjax(datos,"lista_textos",null);
 }
 
+mostrarBlockOutCargando();
+actualizarListas();
 function actualizarListas() {
    listaVideos();
-   listaBanverticales();
-   listaBanhorizontales();
-   listaBancompletos();
-   listaTextos();
 }
-actualizarListas();
+function empezarAreproducir() {
+   mostrarBlockOutListo();
+   
+   cambiarVideo()
+   cambiarBanvertical();
+   cambiarBanhorizontal();
+   cambiarBancompleto();
+   cambiarTextosMarquee();
+   vueltas_actualizacion++;
+}
 setInterval(() => { actualizarListas(); }, INTERVALO_REFRESCAR_MULTIMEDIA);
 
 function cambiarVideo() {
@@ -146,8 +180,11 @@ function cambiarVideo() {
          });
       }
    } else {
-      tag_video.setAttribute("src",`Admin/Assets/Archivos_panel/Defaults/aw_video.mp4`);
-      tag_video.play();
+      // tag_video.setAttribute("src",`Admin/Assets/Archivos_panel/Defaults/aw_video.mp4`);
+      // tag_video.play();
+      if (tag_video.getAttribute("src") == "") {
+         setTimeout(() => { cambiarVideo() }, 10*UN_SEGUNDO);
+      }
       tag_video.addEventListener("ended", () => {
          v++;
          cambiarVideo();
@@ -166,7 +203,7 @@ function cambiarBanvertical() {
          setTimeout(() => { bv++; cambiarBanvertical() }, INTERVALO_ENTRE_IMAGENES_BANVERTICALES);
       }
    } else {
-      img_banvertical.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banvertical.png");
+      // img_banvertical.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banvertical.png");
       setTimeout(() => { bh=0; cambiarBanvertical() }, INTERVALO_ENTRE_IMAGENES_BANVERTICALES);
    }
 }
@@ -182,7 +219,7 @@ function cambiarBanhorizontal() {
          setTimeout(() => { bh++; cambiarBanhorizontal() }, INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES);
       }
    } else {
-      img_banhorizontal.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banhorizontal.png");
+      // img_banhorizontal.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_banhorizontal.png");
       setTimeout(() => { bh=0; cambiarBanhorizontal() }, INTERVALO_ENTRE_IMAGENES_BANHORIZONTALES);
    }
 }
@@ -197,7 +234,7 @@ function cambiarBancompleto() {
       }
       setTimeout(() => { bc++; cambiarBancompleto() }, INTERVALO_ENTRE_IMAGENES_COMPLETAS);
    } else {
-      img_bancompleto.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_bancompleto.png");
+      // img_bancompleto.attr('src',"Admin/Assets/Archivos_panel/Defaults/aw_bancompleto.png");
       setTimeout(() => { bc=0; cambiarBancompleto() }, INTERVALO_ENTRE_IMAGENES_COMPLETAS);
    }
 }
@@ -267,19 +304,3 @@ function cambiarTextosMarquee() {
       })
    }
 }
-
-setTimeout(() => {   
-// console.log(lista_videos);
-// console.log(lista_banverticales);
-// console.log(lista_banhorizontales);
-// console.log(lista_bancompletos);
-// console.log(lista_textos);
-
-cambiarVideo()
-cambiarBanvertical();
-cambiarBanhorizontal();
-cambiarBancompleto();
-cambiarTextosMarquee()
-}, UN_SEGUNDO);
-
-

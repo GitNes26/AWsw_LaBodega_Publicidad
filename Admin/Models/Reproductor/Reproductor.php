@@ -24,13 +24,12 @@ class Reproductor extends DB_connection
       }
    }
 
-   function videosParaReproducir($id_cliente,$plantilla,$fecha_inicial,$fecha_final) {
+   function videosParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
          $query = "SELECT v.vid_ruta,v.vid_plantilla,v.vid_fecha_ini,v.vid_fecha_fin
          FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id
          WHERE c.cli_id=$id_cliente
          AND v.vid_status=1
-         AND v.vid_plantilla=$plantilla
          AND v.vid_fecha_ini <= '$fecha_final'
          AND v.vid_fecha_fin >= '$fecha_inicial'";
 
