@@ -56,7 +56,7 @@ class Video extends DB_connection
 
    function mostrarVideos() {
       try {
-         $query = "SELECT c.cli_id,v.vid_id,c.cli_nom_empresa,v.vid_fecha_ini,v.vid_fecha_fin,v.vid_plantilla,v.vid_ruta,v.vid_status FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id";
+         $query = "SELECT c.cli_id,v.vid_id,c.cli_nom_empresa,v.vid_fecha_ini,v.vid_fecha_fin,v.vid_plantilla,v.vid_ruta,v.vid_status FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id ORDER BY v.vid_id DESC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 

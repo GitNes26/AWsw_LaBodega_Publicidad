@@ -28,10 +28,10 @@ class Usuario extends DB_connection
          $consulta = $this->SelectOnlyOne($query);
          if (sizeof($consulta) > 0) {
             if (password_verify($contrasenia, $consulta["usr_pass"])) {
-               setcookie("id_usuario",$consulta["usr_id"], time() + (86400*30), "/");
-               setcookie("usuario",$consulta["usr_nombre"], time() + (86400*30), "/");
-               setcookie("permisos",$consulta["usr_permisos"], time() + (86400*30), "/");
-               setcookie("sesion","activa", time() + (86400*30), "/");
+               setcookie("bodega_id_usuario",$consulta["usr_id"], time() + (86400*30), "/");
+               setcookie("bodega_usuario",$consulta["usr_nombre"], time() + (86400*30), "/");
+               setcookie("bodega_permisos",$consulta["usr_permisos"], time() + (86400*30), "/");
+               setcookie("bodega_sesion","activa", time() + (86400*30), "/");
                
                $respuesta = array(
                   "Resultado" => 'correcto',
@@ -61,15 +61,15 @@ class Usuario extends DB_connection
    }
 
    function cerrarSesion() {
-      unset($_COOKIE["id_usuario"]);
-      unset($_COOKIE["usuario"]);
-      unset($_COOKIE["permisos"]);
-      unset($_COOKIE["sesion"]);
+      unset($_COOKIE["bodega_id_usuario"]);
+      unset($_COOKIE["bodega_usuario"]);
+      unset($_COOKIE["bodega_permisos"]);
+      unset($_COOKIE["bodega_sesion"]);
 
-      setcookie("id_usuario", null, -1, "/");
-      setcookie("usuario", null, -1, "/");
-      setcookie("permisos", null, -1,);
-      setcookie("sesion", null, -1, "/");
+      setcookie("bodega_id_usuario", null, -1, "/");
+      setcookie("bodega_usuario", null, -1, "/");
+      setcookie("bodega_permisos", null, -1,);
+      setcookie("bodega_sesion", null, -1, "/");
 
       $respuesta = array(
          "Resultado" => 'correcto',

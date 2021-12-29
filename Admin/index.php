@@ -1,6 +1,6 @@
 <?php
-if (isset($_COOKIE["sesion"])) {
-   if ($_COOKIE["sesion"] != "activa") {
+if (isset($_COOKIE["bodega_sesion"])) {
+   if ($_COOKIE["bodega_sesion"] != "activa") {
       header("location:../index.php");
       die();
    }
@@ -20,7 +20,7 @@ require_once "./Templates/Index/side_bar_index.php";
       <div class="container-fluid">
          <div class="row mb-2">
             <div class="col-sm-6">
-               <h1>Bienvenido <?php echo$_COOKIE['usuario'] ?></h1>
+               <h1>Bienvenido <?php echo$_COOKIE['bodega_usuario'] ?></h1>
             </div>
          </div>
       </div><!-- /.container-fluid -->
@@ -34,7 +34,7 @@ require_once "./Templates/Index/side_bar_index.php";
          <div class="card-body">
             <div class="row">
                <?php 
-               include './Models/Cliente/Cliente.php';
+               include 'Models/Cliente/Cliente.php';
                error_reporting(0);
                $Cliente = new Cliente();
                foreach ($Cliente->mostrarClientesYCantidadesContenido() as $objCliente) {

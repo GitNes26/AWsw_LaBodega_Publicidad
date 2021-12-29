@@ -2,8 +2,8 @@
 //  require_once $_SERVER['DOCUMENT_ROOT'].'/AWS/LaBodega_publicidad/Admin/Configurations/globals.php';
 require_once 'Admin/Configurations/globals.php';
 
-if (isset($_COOKIE["sesion"])) {
-    if ($_COOKIE["sesion"] == "activa") {
+if (isset($_COOKIE["bodega_sesion"])) {
+    if ($_COOKIE["bodega_sesion"] == "activa") {
         header("location:Admin/");
         die();
     }

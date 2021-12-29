@@ -55,7 +55,7 @@ class Bancompleto extends DB_connection
 
    function mostrarBancompletos() {
       try {
-         $query = "SELECT c.cli_id,ic.imgc_id,c.cli_nom_empresa,ic.imgc_fecha_ini,ic.imgc_fecha_fin,ic.imgc_ruta,ic.imgc_status FROM imagen_completa as ic INNER JOIN clientes as c ON c.cli_id=ic.cli_id";
+         $query = "SELECT c.cli_id,ic.imgc_id,c.cli_nom_empresa,ic.imgc_fecha_ini,ic.imgc_fecha_fin,ic.imgc_ruta,ic.imgc_status FROM imagen_completa as ic INNER JOIN clientes as c ON c.cli_id=ic.cli_id ORDER BY ic.imgc_id DESC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 

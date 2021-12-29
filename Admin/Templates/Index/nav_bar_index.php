@@ -13,7 +13,7 @@
       <li class='nav-item'>
          <div class='user-panel d-flex'>
             <div class='info'>
-               <span class='d-block text-decoration-none text-dark text-bold'><i class='text-dark'><?php echo $_COOKIE["usuario"] ?></i></span>
+               <span class='d-block text-decoration-none text-dark text-bold'><i class='text-dark'><?php echo $_COOKIE["bodega_usuario"] ?></i></span>
             </div>
          </div>
       </li>

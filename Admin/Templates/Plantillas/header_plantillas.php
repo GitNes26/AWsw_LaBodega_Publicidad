@@ -1,6 +1,6 @@
 <?php
-// if (isset($_COOKIE["sesion"])) {
-//    if ($_COOKIE["sesion"] != "activa") {
+// if (isset($_COOKIE["bodega_sesion"])) {
+//    if ($_COOKIE["bodega_sesion"] != "activa") {
 //        header("location:index.php");
 //        die();
 //    }

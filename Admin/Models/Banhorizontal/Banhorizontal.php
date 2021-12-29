@@ -21,7 +21,7 @@ class Banhorizontal extends DB_connection
             "Titulo_alerta" => 'Opps...!',
             "Mensaje_alerta" => 'Datos incorrectos.',
          );
-         $query = "SELECT c.cli_id,iv.imgh_id,c.cli_nom_empresa,iv.imgh_fecha_ini,iv.imgh_fecha_fin,iv.imgh_ruta,iv.imgh_status FROM imagen_horizontal as iv INNER JOIN clientes as c ON c.cli_id=iv.cli_id WHERE iv.imgh_id=$id";
+         $query = "SELECT c.cli_id,ih.imgh_id,c.cli_nom_empresa,ih.imgh_fecha_ini,ih.imgh_fecha_fin,ih.imgh_ruta,ih.imgh_status FROM imagen_horizontal as ih INNER JOIN clientes as c ON c.cli_id=ih.cli_id WHERE ih.imgh_id=$id";
          $consulta = $this->SelectOnlyOne($query);
          if (sizeof($consulta) > 0) {
             $respuesta = array(
@@ -55,7 +55,7 @@ class Banhorizontal extends DB_connection
 
    function mostrarBanhorizontales() {
       try {
-         $query = "SELECT c.cli_id,iv.imgh_id,c.cli_nom_empresa,iv.imgh_fecha_ini,iv.imgh_fecha_fin,iv.imgh_ruta,iv.imgh_status FROM imagen_horizontal as iv INNER JOIN clientes as c ON c.cli_id=iv.cli_id";
+         $query = "SELECT c.cli_id,ih.imgh_id,c.cli_nom_empresa,ih.imgh_fecha_ini,ih.imgh_fecha_fin,ih.imgh_ruta,ih.imgh_status FROM imagen_horizontal as ih INNER JOIN clientes as c ON c.cli_id=ih.cli_id ORDER BY ih.imgh_id DESC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 

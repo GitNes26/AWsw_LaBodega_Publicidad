@@ -55,7 +55,7 @@ class Banvertical extends DB_connection
 
    function mostrarBanverticales() {
       try {
-         $query = "SELECT c.cli_id,iv.img_id,c.cli_nom_empresa,iv.img_fecha_ini,iv.img_fecha_fin,iv.img_ruta,iv.img_status FROM imagen_vertical as iv INNER JOIN clientes as c ON c.cli_id=iv.cli_id";
+         $query = "SELECT c.cli_id,iv.img_id,c.cli_nom_empresa,iv.img_fecha_ini,iv.img_fecha_fin,iv.img_ruta,iv.img_status FROM imagen_vertical as iv INNER JOIN clientes as c ON c.cli_id=iv.cli_id ORDER BY iv.img_id DESC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 

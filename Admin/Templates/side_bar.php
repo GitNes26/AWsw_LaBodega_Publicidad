@@ -19,40 +19,40 @@
       $permiso_plantilla1 = false;
       $permiso_plantilla2 = false;
       $permiso_plantilla3 = false;
-      if (strpos($_COOKIE['permisos'], 'todos') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'todos') !== false) {
          $permiso_todos = true;
       }
-      if (strpos($_COOKIE['permisos'], 'usuarios') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'usuarios') !== false) {
          $permiso_usuarios = true;
       }
-      if (strpos($_COOKIE['permisos'], 'clientes') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'clientes') !== false) {
          $permiso_clientes = true;
       }
-      if (strpos($_COOKIE['permisos'], 'videos') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'videos') !== false) {
          $permiso_videos = true;
       }
-      if (strpos($_COOKIE['permisos'], 'banvertical') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'banvertical') !== false) {
          $permiso_banvertical = true;
       }
-      if (strpos($_COOKIE['permisos'], 'banhorizontal') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'banhorizontal') !== false) {
          $permiso_banhorizontal = true;
       }
-      if (strpos($_COOKIE['permisos'], 'bancompleto') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'bancompleto') !== false) {
          $permiso_bancompleto = true;
       }
-      if (strpos($_COOKIE['permisos'], 'texto') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'texto') !== false) {
          $permiso_texto = true;
       }
-      if (strpos($_COOKIE['permisos'], 'reproductor') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'reproductor') !== false) {
          $permiso_reproductor = true;
       }
-      if (strpos($_COOKIE['permisos'], 'plantilla1') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'plantilla1') !== false) {
          $permiso_plantilla1 = true;
       }
-      if (strpos($_COOKIE['permisos'], 'plantilla2') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'plantilla2') !== false) {
          $permiso_plantilla2 = true;
       }
-      if (strpos($_COOKIE['permisos'], 'plantilla3') !== false) {
+      if (strpos($_COOKIE['bodega_permisos'], 'plantilla3') !== false) {
          $permiso_plantilla3 = true;
       }
    ?>

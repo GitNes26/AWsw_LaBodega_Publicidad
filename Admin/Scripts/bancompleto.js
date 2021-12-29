@@ -49,7 +49,8 @@ $(document).ready(() => {
       //         //exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }
       //     },
       // ],
-      "deferRender": true
+      "deferRender": true,
+      aaSorting: [] //deshabilitar ordenado automatico
 
    });
 
@@ -189,7 +190,7 @@ $(document).ready(() => {
 
 /*Select2*/
 $.fn.select2.defaults.set('language', 'es');
-$('.select2').select2()
+$('.select2').select2({dropdownParent: $("#modal")});
 
 const url_modelo_app = "../Models/Bancompleto/App.php";
 const

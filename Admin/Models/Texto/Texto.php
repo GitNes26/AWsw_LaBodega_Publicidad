@@ -60,7 +60,7 @@ class Texto extends DB_connection
 
    function mostrarTextoes() {
       try {
-         $query = "SELECT c.cli_id,t.text_id,c.cli_nom_empresa,t.text_spot,t.text_fecha_ini,t.text_fecha_fin,t.text_status,t.text_tipo,t.text_hora_ini,t.text_hora_fin,t.text_color,t.text_fondo_color FROM texto as t INNER JOIN clientes as c ON c.cli_id=t.cli_id";
+         $query = "SELECT c.cli_id,t.text_id,c.cli_nom_empresa,t.text_spot,t.text_fecha_ini,t.text_fecha_fin,t.text_status,t.text_tipo,t.text_hora_ini,t.text_hora_fin,t.text_color,t.text_fondo_color FROM texto as t INNER JOIN clientes as c ON c.cli_id=t.cli_id ORDER BY t.text_id DESC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 
