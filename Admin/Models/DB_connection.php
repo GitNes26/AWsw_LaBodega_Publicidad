@@ -3,7 +3,8 @@ class DB_connection {
    private $dbh;
    //CONFIGURACION DE CONEXION A LA BD
    function __construct() {
-      $dsn = "mysql:host=localhost; dbname=aws_bd_publicidad_labodega; charset=utf8";
+      // $dsn = "mysql:host=awstorreoncom2.ipowermysql.com;dbname=bd_bodega;charset=utf8";
+      $dsn = "mysql:host=localhost;dbname=aws_bd_publicidad_labodega;charset=utf8";
       $options = [
          PDO::ATTR_EMULATE_PREPARES    => false,
          PDO::ATTR_EMULATE_PREPARES    => true,
@@ -11,6 +12,7 @@ class DB_connection {
          PDO::ATTR_DEFAULT_FETCH_MODE  => PDO::FETCH_ASSOC,
       ];
       $this->dbh = new PDO($dsn,'root','',$options);
+      // $this->dbh = new PDO($dsn,'usrbodega','bodega&2021',$options);
    }
 
    //FUNCION PARA OBTENER MÁS DE UN RESULTADO

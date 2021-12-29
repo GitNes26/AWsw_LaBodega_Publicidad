@@ -34,7 +34,7 @@ require_once "./Templates/Index/side_bar_index.php";
          <div class="card-body">
             <div class="row">
                <?php 
-               include 'Models/Cliente/Cliente.php';
+               include './Models/Cliente/Cliente.php';
                error_reporting(0);
                $Cliente = new Cliente();
                foreach ($Cliente->mostrarClientesYCantidadesContenido() as $objCliente) {

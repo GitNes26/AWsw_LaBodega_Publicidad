@@ -33,7 +33,7 @@ $Cliente = new Cliente();
       <!-- card -->
       <div class="card card-outline card-dark shadow">
          <div class="container-fluid mt-2">
-            <i class="text-muted h5">Plantilla1: <b>1920x1080</b> &nbsp; | &nbsp; Plantilla2: <b>1920x800 MP4</b> &nbsp; | &nbsp; Plantilla3: <b>???</b></i>
+            <i class="text-muted h5">Plantilla1: <b>1920x1080</b> &nbsp; | &nbsp; Plantilla2: <b>1920x800 MP4</b></i>
             <button id="btn_abrir_modal" class="float-end btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target="#modal"><i class="fa-solid fa-circle-plus"></i>&nbsp; AGREGAR VIDEO</button>
          </div>
          <div class="card-body">
@@ -123,7 +123,7 @@ $Cliente = new Cliente();
                            <option selected value="-1">Selecciona una opción</option>
                            <option value="1">Plantilla 1 (1920x1080)</option>
                            <option value="2">Plantilla 2 (1920x800 MP4)</option>
-                           <option value="3">Plantilla 3 (???)</option>
+                           <!-- <option value="3">Plantilla 3 (???)</option> -->
                         </select>
                      </div>
                      <div class="mb-3">
