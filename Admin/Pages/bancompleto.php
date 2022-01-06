@@ -7,6 +7,7 @@ include '../Models/Bancompleto/Bancompleto.php';
 $Bancompleto = new Bancompleto();
 include '../Models/Cliente/Cliente.php';
 $Cliente = new Cliente();
+// $PrimerCliente = new Cliente();
 ?>
 <!-- Content Wrapper. Contenido de la pagina -->
 <div class="content-wrapper text-sm">
@@ -32,50 +33,65 @@ $Cliente = new Cliente();
          </div>
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_bancompletos" class="table text-center" style="width:100%">
+            <table id="tabla_bancompletos" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
+                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </thead>
                <tbody>
                   <?php
+                  $activos = 0;
                   error_reporting(0);
                   foreach ($Bancompleto->mostrarBancompletos() as $objBancompleto) {
                      $imgc_id = $objBancompleto['imgc_id'];
                      $cli_id = $objBancompleto['cli_id'];
-                     $activo = $objBancompleto['imgc_status'] == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>";
+                     $orden = $objBancompleto['imgc_order'];
+                     $clases_handle = "handle";
+                     if ($orden == 1000000) { $clases_handle = "text-muted"; $orden = ""; }
+                     $activo = $objBancompleto['imgc_status'];
+                     $td_activo = $activo == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>";
+
+                     if ($activo == true ) {$activos += 1;}
+
                      echo  "
-                        <tr>
+                        <tr data-id='$imgc_id'>
+                           <!-- <td class='align-middle'>$imgc_id</td> -->
                            <td class='align-middle'>$objBancompleto[cli_nom_empresa]</td>
                            <td class='align-middle td_fecha_inicial'>$objBancompleto[imgc_fecha_ini]</td>
                            <td class='align-middle td_fecha_final'>$objBancompleto[imgc_fecha_fin]</td>
                            <td class='align-middle'>
                               <img src='../$objBancompleto[imgc_ruta]' width='50' preload='true'></img>
                               </td>
-                           <td class='align-middle'>$activo</td>
+                              <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$imgc_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
+                              <td class='align-middle'>$td_activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objBancompleto[imgc_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objBancompleto[imgc_id]' data-status-actual='$objBancompleto[imgc_status]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
                               <span class='mx-md-2'></span>
                               <button class='btn btn-danger btn_eliminar' data-id='$objBancompleto[imgc_id]' data-nombre='$objBancompleto[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>
                      ";
                   }
+                  // echo  " <input type='hidden' id='activos' value='$activos'>";
                   ?>
                </tbody>
                <tfoot>
                   <tr class="thead-dark">
+                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
                      <th>Activo</th>
+                     <th>Orden</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </tfoot>
@@ -97,6 +113,7 @@ $Cliente = new Cliente();
                   <form id="formulario_modal" enctype="multipart/form-data">
                      <input type="hidden" id="accion" name="accion">
                      <input type="hidden" id="id" name="id" value=''>
+                     <input type="hidden" id="status_actual" name="status_actual" value=''>
                      <div class="mb-3">
                         <label for="input_ubicacion" class="form-label">Ubicación:</label>
                         <select class="select2 form-control" style="width:100%" aria-label="Default select example" id="input_ubicacion" name="input_ubicacion">

@@ -159,6 +159,11 @@ function empezarAreproducir() {
    cambiarBancompleto();
    cambiarTextosMarquee();
    vueltas_actualizacion++;
+   // console.log(lista_videos);
+   // console.log(lista_banhorizontales);
+   // console.log(lista_banhorizontales);
+   // console.log(lista_bancompletos);
+   // console.log(lista_textos);
 }
 setInterval(() => { actualizarListas(); }, INTERVALO_REFRESCAR_MULTIMEDIA);
 

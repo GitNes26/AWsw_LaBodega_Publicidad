@@ -222,4 +222,22 @@ class Cliente extends DB_connection
          echo "Error: ".$e->getMessage();
       }
    }
+
+   function obtenerPrimerCliente() {
+      try {
+         $query = "SELECT cli_id,cli_nom_empresa FROM clientes ORDER BY cli_id ASC LIMIT 1";
+         $resultado = $this->SelectOnlyOne($query);
+         if (sizeof($resultado) > 0) { return $resultado; }
+
+      } catch (Exception $e) {
+         echo "Error: ".$e->getMessage();
+         $respuesta = array(
+            "Resultado" => 'error',
+            "Icono_alerta" => 'error',
+            "Titulo_alerta" => 'Opps...!',
+            "Mensaje_alerta" => 'Ha ocurrido un erro, verifica tus datos.',
+         );
+      }
+      die(json_encode($respuesta));
+   }
 }

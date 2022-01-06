@@ -15,7 +15,7 @@ if (isset($_FILES['input_archivo'])) {
    $directorio = "../../$path_archivos_panel/$ubicacion/Bancompleto";
    $nombre_archivo = $archivo["name"];
    $destino = "$directorio/$ubicacion-$nombre_archivo";
-   $tipo = explode("/",$archivo["type"]);
+   $tipo = explode(".",$nombre_archivo);
    $tipo = strtoupper(trim(end($tipo)));
 
    if (!is_dir($directorio)) {
@@ -46,11 +46,17 @@ if (isset($_POST['id_ubicacion_actual'])) { $id_ubicacion_actual = $_POST['id_ub
 if (isset($_POST['query'])) { $query = $_POST['query']; }
 if (isset($_POST['ids'])) { $ids = $_POST['ids']; }
 
+if (isset($_POST['orden'])) { $orden = $_POST['orden']; }
+if (isset($_POST['id_cliente'])) { $id_cliente = $_POST['id_cliente']; }
+
 // var_dump($_POST);
 // var_dump($_FILES);
 // die();
 
 //PETICIONES
+if ($accion == 'mostrar_bancompletos_cliente') {
+   $Bancompleto->mostrarBancompletosPorCliente($id_cliente);
+}
 if ($accion == 'mostrar_bancompleto') {
    $Bancompleto->mostrarBancompleto($id);
 }
@@ -60,12 +66,14 @@ if ($accion == 'crear_bancompleto') {
 }
 
 if ($accion == 'editar_bancompleto') {
+   if (isset($_POST['asignar_orden'])) { $asignar_orden = $_POST['asignar_orden']; }
+
    if($id_ubicacion_actual != "") {
       if ($ubicacion != $id_ubicacion_actual) {
          $ruta = moverArchivo($src_archivo,$ubicacion,$ruta);
       }
    }
-   $Bancompleto->editarBancompleto($id,$ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status);
+   $Bancompleto->editarBancompleto($id,$ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$asignar_orden);
 }
 
 if ($accion == "eliminar_bancompleto") {
@@ -86,6 +94,10 @@ if ($accion == "actualizar_status") {
    $Bancompleto->actualizarStatus($query,$ids);
 }
 
+if ($accion == "actualizar_orden") {
+   $Bancompleto->actualizarOrden($id,$orden);
+}
+
 //Esta función actuará si se edita la ubicación del objeto
 function moverArchivo($src_archivo,$ubicacion,$ruta) {
    $path_actual = "../../$src_archivo";
@@ -100,10 +112,45 @@ function moverArchivo($src_archivo,$ubicacion,$ruta) {
       @mkdir($directorio,0755,true);
    }
 
-   if (rename($path_actual,$destino)) {
-      $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$nombre_archivo";
-   } else {
-      print(error_get_last());
+   // var_dump("$path_actual | $destino");
+   if ($src_archivo == "" || $src_archivo == null) {
+      $nombre_archivo = $_FILES["input_archivo"]["name"];
+      $nombre_archivo = "$ubicacion-$nombre_archivo";
+      $destino = "$directorio/$nombre_archivo";
+
+      if (file_exists($destino)) {
+         $ruta = explode("../",$destino);
+         $ruta = trim(end($ruta));
+         return $ruta;
+      } else {
+         if (move_uploaded_file($_FILES["input_archivo"]["tmp_name"],$destino)) {
+            $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$ubicacion-$nombre_archivo";
+            var_dump($ruta);
+         } else {
+            $ruta = "";
+            $tipo = "";
+            print(error_get_last());
+         }
+      }
+   }
+   // if ($path_actual == $destino) {return $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$nombre_archivo";}
+   else {
+      // consultar si hay más registros con la misma ruta...
+      $Bancompleto = new Bancompleto();
+      $path = explode("../",$path_actual);
+      $ruta = trim(end($path));
+      // var_dump($ruta);
+      $cantidad = (int)$Bancompleto->contarRegistrosConLaMismaRuta($ruta);
+      // var_dump($cantidad);
+      if ($cantidad > 0) {
+         @copy($path_actual,$destino);
+      } else {
+         if (rename($path_actual,$destino)) {
+            $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$nombre_archivo";
+         } else {
+            print(error_get_last());
+         }
+      }
    }
    return $ruta;
       

@@ -34,7 +34,7 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
    <!-- Mis Estilos -->
-   <link rel="stylesheet" type="text/css" href="Admin/Assets/Dist/Css/estilosPlantillas.css">
+   <link rel="stylesheet" type="text/css" href="Admin/Assets/Dist/Css/estilosPlantillas.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed text-sm">
    <!-- Site wrapper -->

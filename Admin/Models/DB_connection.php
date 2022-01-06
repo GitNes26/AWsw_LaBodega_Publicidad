@@ -62,6 +62,21 @@ class DB_connection {
       }
    }
 
+   //FUNCION PARA OBTENER UN SOLO RESULTADO SIN CERRAR CONEXION
+   function SelectOnlyOneContinuous($query) {
+      try {
+         $statement = $this->dbh->prepare($query);
+         $statement->execute();
+         $statement->setFetchMode(PDO::FETCH_ASSOC);
+         $result = $statement->fetch();
+         return $result;
+      } catch (PDOException $e) {
+         error_log('PDOException -  '.$e->getMessage(), 0);
+         http_response_code(500);
+         die($e->getMessage());
+      }
+   }
+
    //FUNCION PARA EJECUTAR CONSULTA
    function ExecuteQuery($query,$params) {
       try {
@@ -76,6 +91,18 @@ class DB_connection {
       }
    }
 
+   //FUNCION PARA EJECUTAR CONSULTA
+   function ExecuteQueryContinuous($query,$params) {
+      try {
+         $statment = $this->dbh->prepare($query);
+         $statment->execute($params);
+      } catch (PDOException $e) {
+         error_log('PDOException - '.$e->getMessage(), 0);
+         http_response_code(500);
+         die($e->getMessage());
+         return $e->getMessage();
+      }
+   }
    //FUNCION PARA TRAER EL ULTIMO ID REGISTRADO
    function GetLastId() {
       $id = $this->dbh->lastInsertId();
