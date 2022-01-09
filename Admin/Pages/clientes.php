@@ -32,7 +32,7 @@ require_once "../Templates/side_bar.php";
          </div>
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_clientes" class="table text-center" style="width:100%">
+            <table id="tabla_clientes" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
                      <th>Número ubicación</th>

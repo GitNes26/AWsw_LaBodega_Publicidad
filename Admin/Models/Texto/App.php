@@ -25,13 +25,17 @@ if (isset($_POST['input_tipo'])) {
 if (isset($_POST['query'])) { $query = $_POST['query']; }
 if (isset($_POST['ids'])) { $ids = $_POST['ids']; }
 
-
+if (isset($_POST['orden'])) { $orden = $_POST['orden']; }
+if (isset($_POST['id_cliente'])) { $id_cliente = $_POST['id_cliente']; }
 
 // var_dump($_POST);
 // var_dump($_FILES);
 // die();
 
 //PETICIONES
+if ($accion == 'mostrar_textos_cliente') {
+   $Texto->mostrarTextosPorCliente($id_cliente);
+}
 if ($accion == 'mostrar_texto') {
    $Texto->mostrarTexto($id);
 }
@@ -41,7 +45,9 @@ if ($accion == 'crear_texto') {
 }
 
 if ($accion == 'editar_texto') {
-   $Texto->editarTexto($id,$ubicacion,$fecha_inicial,$fecha_final,$texto,$status,$tipo,$hora_inicial,$hora_final,$color_texto,$color_fondo);
+   if (isset($_POST['asignar_orden'])) { $asignar_orden = $_POST['asignar_orden']; }
+
+   $Texto->editarTexto($id,$ubicacion,$fecha_inicial,$fecha_final,$texto,$status,$tipo,$hora_inicial,$hora_final,$color_texto,$color_fondo,$asignar_orden);
 }
 
 if ($accion == "eliminar_texto") {
@@ -52,4 +58,8 @@ if ($accion == "eliminar_texto") {
 //FUNCIONES EXTRAS
 if ($accion == "actualizar_status") {
    $Texto->actualizarStatus($query,$ids);
+}
+
+if ($accion == "actualizar_orden") {
+   $Texto->actualizarOrden($id,$orden);
 }

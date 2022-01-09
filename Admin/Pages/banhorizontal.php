@@ -32,37 +32,52 @@ $Cliente = new Cliente();
          </div>
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_banhorizontales" class="table text-center" style="width:100%">
+            <table id="tabla_banhorizontales" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </thead>
-               <tbody>
+               <tbody hidden>
                   <?php
                   error_reporting(0);
                   foreach ($Banhorizontal->mostrarBanhorizontales() as $objBanhorizontal) {
                      $imgh_id = $objBanhorizontal['imgh_id'];
+                     $nom_empresa = $objBanhorizontal['cli_nom_empresa'];
                      $cli_id = $objBanhorizontal['cli_id'];
-                     $activo = $objBanhorizontal['imgh_status'] == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgh_id' data-status='$objBanhorizontal[imgh_status]' data-fecha-final='$objBanhorizontal[imgh_fecha_fin]'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgh_id' data-status='$objBanhorizontal[imgh_status]' data-fecha-final='$objBanhorizontal[imgh_fecha_fin]'></i>";
+                     $fecha_ini = $objBanhorizontal['imgh_fecha_ini'];
+                     $fecha_fin = $objBanhorizontal['imgh_fecha_fin'];
+                     $ruta = $objBanhorizontal['imgh_ruta'];
+                     $orden = $objBanhorizontal['imgh_order'];
+                     $clases_handle = "handle";
+                     $status = $objBanhorizontal['imgh_status'];
+                     $activo = $status == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgh_id' data-status='$status' data-fecha-final='$fecha_fin'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgh_id' data-status='$status' data-fecha-final='$fecha_fin'></i>";
+                     
+                     if ($status == false ) {$orden = 1000000;}
+                     if ($orden == 1000000) { $clases_handle = "text-muted"; $orden = ""; }
+
                      echo  "
-                        <tr>
-                           <td class='align-middle'>$objBanhorizontal[cli_nom_empresa]</td>
-                           <td class='align-middle td_fecha_inicial'>$objBanhorizontal[imgh_fecha_ini]</td>
-                           <td class='align-middle td_fecha_final'>$objBanhorizontal[imgh_fecha_fin]</td>
+                        <tr data-id='$imgh_id'>
+                           <td class='align-middle'>$nom_empresa</td>
+                           <td class='align-middle td_fecha_inicial'>$fecha_ini</td>
+                           <td class='align-middle td_fecha_final'>$fecha_fin</td>
                            <td class='align-middle'>
-                              <img src='../$objBanhorizontal[imgh_ruta]' width='50' preload='true'></img>
-                              </td>
+                              <img src='../$ruta' class='img-fluid rounded shadow tooltip_imagen tt_banhorizontal' data-id='$imgh_id'></img>
+                              <img src='../$ruta' width='50' preload='true' class='td_img' data-id='$imgh_id'></img>
+                           </td>
+                           <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$imgh_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
+
                            <td class='align-middle'>$activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objBanhorizontal[imgh_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$imgh_id' data-status-actual='$status'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
                               <span class='mx-md-2'></span>
-                              <button class='btn btn-danger btn_eliminar' data-id='$objBanhorizontal[imgh_id]' data-nombre='$objBanhorizontal[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
+                              <button class='btn btn-danger btn_eliminar' data-id='$imgh_id' data-nombre='$nom_empresa'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>
                      ";
@@ -75,6 +90,7 @@ $Cliente = new Cliente();
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
@@ -97,6 +113,7 @@ $Cliente = new Cliente();
                   <form id="formulario_modal" enctype="multipart/form-data">
                      <input type="hidden" id="accion" name="accion">
                      <input type="hidden" id="id" name="id" value=''>
+                     <input type="hidden" id="status_actual" name="status_actual" value=''>
                      <div class="mb-3">
                         <label for="input_ubicacion" class="form-label">Ubicación:</label>
                         <select class="select2 form-control" style="width:100%" aria-label="Default select example" id="input_ubicacion" name="input_ubicacion">
@@ -123,13 +140,13 @@ $Cliente = new Cliente();
                         <div class="form-text">Subir archivo con un peso máximo de <b id="peso_archivo"></b><b>MB</b>.</div>
                      </div>
                      <!-- DIV CARGAR IMAGEN -->
-                     <!-- DIV IMAGEN CARGADO -->
+                     <!-- DIV IMAGEN CARGADA -->
                      <div class="mb-3" id="div_archivo_cargado">
                         <label for="ver_archivo" class="form-label">Banner horizontal cargado:</label>
-                        <img src="<?php echo "../$objBanhorizontal[imgh_ruta]" ?>" controls preview="true" class="" id="ver_archivo" width="100%"></img>
+                        <img src="<?php echo "../$ruta" ?>" controls preview="true" class="" id="ver_archivo" width="100%"></img>
                         <button type="button" id="btn_quitar_archivo" class="btn btn-default btn-block">QUITAR IMAGEN</button>
                      </div>
-                     <!-- DIV IMAGEN CARGADO -->
+                     <!-- DIV IMAGEN CARGADA -->
                      <div class="row g-3 align-items-center">
                         <div class="col-auto">
                            <label for="input_status" class="col-form-label h4">STATUS:</label>

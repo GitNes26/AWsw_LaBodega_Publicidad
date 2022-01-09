@@ -31,7 +31,7 @@ $Cliente = new Cliente();
          </div>
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_textos" class="table text-center" style="width:100%">
+            <table id="tabla_textos" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
                      <th>Ubicación</th>
@@ -39,15 +39,17 @@ $Cliente = new Cliente();
                      <th>Fecha final</th>
                      <th>Texo</th>
                      <th>Tipo publicidad</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </thead>
-               <tbody>
+               <tbody hidden>
                   <?php
                   error_reporting(0);
                   foreach ($Texto->mostrarTextoes() as $objTexto) {
                      $text_id = $objTexto['text_id'];
+                     $nom_empresa = $objTexto['cli_nom_empresa'];
                      $cli_id = $objTexto['cli_id'];
                      $color_texto = $objTexto['text_color'];
                      $color_fondo = $objTexto['text_fondo_color'];
@@ -66,20 +68,30 @@ $Cliente = new Cliente();
                      
                      $fecha_final = $objTexto['text_fecha_fin'];
                      if ($objTexto['text_tipo'] == 2) { $fecha_final .= " $objTexto[text_hora_fin]"; }
-                     $activo = $objTexto['text_status'] == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$text_id' data-status='$objTexto[text_status]' data-fecha-final='$fecha_final'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$text_id' data-status='$objTexto[text_status]' data-fecha-final='$fecha_final'></i>";
+
+                     $orden = $objTexto['text_order'];
+                     $clases_handle = "handle";
+
+                     $status = $objTexto['text_status'];
+                     $activo = $status == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$text_id' data-status='$status' data-fecha-final='$fecha_final'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$text_id' data-status='$status' data-fecha-final='$fecha_final'></i>";
                      
+                     if ($status == false ) {$orden = 1000000;}
+                     if ($orden == 1000000) { $clases_handle = "text-muted"; $orden = ""; }
+
                      echo  "
                         <tr>
-                           <td class='align-middle'>$objTexto[cli_nom_empresa]</td>
+                           <td class='align-middle'>$nom_empresa</td>
                            <td class='align-middle td_fecha_inicial'>$fecha_inicial</td>
                            <td class='align-middle td_fecha_final'>$fecha_final</td>
                            $td_texto
                            <td class='align-middle'>$tipo_publicidad</td>
+                           <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$text_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
+
                            <td class='align-middle'>$activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objTexto[text_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <button class='btn btn-primary btn_editar' data-bs-toggle='modal' data-bs-target='#modal' data-id='$text_id' data-status-actual='$status'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
                               <span class='mx-2'></span>
-                              <button class='btn btn-danger btn_eliminar' data-id='$objTexto[text_id]' data-nombre='$objTexto[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
+                              <button class='btn btn-danger btn_eliminar' data-id='$text_id' data-nombre='$nom_empresa'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>
                      ";
@@ -93,6 +105,7 @@ $Cliente = new Cliente();
                      <th>Fecha final</th>
                      <th>Texo</th>
                      <th>Tipo publicidad</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
@@ -115,6 +128,7 @@ $Cliente = new Cliente();
                   <form id="formulario_modal" enctype="multipart/form-data">
                      <input type="hidden" id="accion" name="accion">
                      <input type="hidden" id="id" name="id" value=''>
+                     <input type="hidden" id="status_actual" name="status_actual" value=''>
                      <div class="mb-3">
                         <label for="input_ubicacion" class="form-label">Ubicación:</label>
                         <select class="select2 form-control" style="width:100%" aria-label="Default select example" id="input_ubicacion" name="input_ubicacion">

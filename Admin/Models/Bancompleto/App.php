@@ -12,7 +12,7 @@ if (isset($_FILES['input_archivo'])) {
    $path_archivos_panel = "Assets/Archivos_panel";
    $archivo = $_FILES['input_archivo'];
 
-   $directorio = "../../$path_archivos_panel/$ubicacion/Bancompleto";
+   $directorio = "../../$path_archivos_panel/$ubicacion/Bancompletos";
    $nombre_archivo = $archivo["name"];
    $destino = "$directorio/$ubicacion-$nombre_archivo";
    $tipo = explode(".",$nombre_archivo);
@@ -28,7 +28,7 @@ if (isset($_FILES['input_archivo'])) {
       */
    }
    if (move_uploaded_file($_FILES["input_archivo"]["tmp_name"],$destino)) {
-      $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$ubicacion-$nombre_archivo";
+      $ruta = "$path_archivos_panel/$ubicacion/Bancompletos/$ubicacion-$nombre_archivo";
    } else {
       $ruta = "";
       $tipo = "";
@@ -71,6 +71,8 @@ if ($accion == 'editar_bancompleto') {
    if($id_ubicacion_actual != "") {
       if ($ubicacion != $id_ubicacion_actual) {
          $ruta = moverArchivo($src_archivo,$ubicacion,$ruta);
+         $path = explode(".",$ruta);
+         $tipo = strtoupper(trim(end($path)));
       }
    }
    $Bancompleto->editarBancompleto($id,$ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$asignar_orden);
@@ -106,7 +108,7 @@ function moverArchivo($src_archivo,$ubicacion,$ruta) {
    $nombre_archivo = explode("/", $src_archivo);
    $nombre_archivo = trim(end($nombre_archivo));
 
-   $directorio = "../../$path_archivos_panel/$ubicacion/Bancompleto";
+   $directorio = "../../$path_archivos_panel/$ubicacion/Bancompletos";
    $destino = "$directorio/$nombre_archivo";
    if (!is_dir($directorio)) {
       @mkdir($directorio,0755,true);
@@ -124,7 +126,7 @@ function moverArchivo($src_archivo,$ubicacion,$ruta) {
          return $ruta;
       } else {
          if (move_uploaded_file($_FILES["input_archivo"]["tmp_name"],$destino)) {
-            $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$ubicacion-$nombre_archivo";
+            $ruta = "$path_archivos_panel/$ubicacion/Bancompletos/$ubicacion-$nombre_archivo";
             var_dump($ruta);
          } else {
             $ruta = "";
@@ -133,7 +135,7 @@ function moverArchivo($src_archivo,$ubicacion,$ruta) {
          }
       }
    }
-   // if ($path_actual == $destino) {return $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$nombre_archivo";}
+   // if ($path_actual == $destino) {return $ruta = "$path_archivos_panel/$ubicacion/Bancompletos/$nombre_archivo";}
    else {
       // consultar si hay más registros con la misma ruta...
       $Bancompleto = new Bancompleto();
@@ -146,7 +148,7 @@ function moverArchivo($src_archivo,$ubicacion,$ruta) {
          @copy($path_actual,$destino);
       } else {
          if (rename($path_actual,$destino)) {
-            $ruta = "$path_archivos_panel/$ubicacion/Bancompleto/$nombre_archivo";
+            $ruta = "$path_archivos_panel/$ubicacion/Bancompletos/$nombre_archivo";
          } else {
             print(error_get_last());
          }

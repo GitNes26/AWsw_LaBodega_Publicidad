@@ -32,9 +32,9 @@ $(document).ready(() => {
          ]
       ],
       "pageLength": 5,
-      "order": [
-         [0, 'asc']
-      ],
+      // "order": [
+      //    [0, 'asc']
+      // ],
       // buttons: [
       //     {
       //         extend: 'excel', title: 'Ventas Registradas (Relacionadas al arduino)',
@@ -49,6 +49,7 @@ $(document).ready(() => {
       //         //exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] }
       //     },
       // ],
-      "deferRender": true
+      "deferRender": true,
+      aaSorting: [], //deshabilitar ordenado automatico
    });
 });

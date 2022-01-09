@@ -26,7 +26,7 @@ $Reproductor = new Reproductor();
       <div class="card card-outline card-dark shadow">
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_reproductores" class="table text-center" style="width:100%">
+            <table id="tabla_reproductores" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
                      <th>Negocio</th>

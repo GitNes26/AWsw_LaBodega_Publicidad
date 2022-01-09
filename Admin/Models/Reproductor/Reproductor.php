@@ -15,7 +15,7 @@ class Reproductor extends DB_connection
 {  
    function mostrarReproductores() {
       try {
-         $query = "SELECT c.cli_id,c.cli_nom_empresa FROM clientes as c WHERE c.cli_activo = 1";
+         $query = "SELECT c.cli_id,c.cli_nom_empresa FROM clientes as c WHERE c.cli_activo = 1 ORDER BY cli_id ASC";
          $resultado = $this->SelectAll($query);
          if (sizeof($resultado) > 0) { return $resultado; }
 
@@ -26,12 +26,13 @@ class Reproductor extends DB_connection
 
    function videosParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
-         $query = "SELECT v.vid_ruta,v.vid_plantilla,v.vid_fecha_ini,v.vid_fecha_fin
+         $query = "SELECT v.vid_ruta,v.vid_order,v.vid_plantilla,v.vid_fecha_ini,v.vid_fecha_fin
          FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id
          WHERE c.cli_id=$id_cliente
          AND v.vid_status=1
          AND v.vid_fecha_ini <= '$fecha_final'
-         AND v.vid_fecha_fin >= '$fecha_inicial'";
+         AND v.vid_fecha_fin >= '$fecha_inicial'
+         ORDER BY v.vid_order ASC";
 
          $resultado = $this->SelectAll($query);
 
@@ -56,12 +57,13 @@ class Reproductor extends DB_connection
 
    function banverticalesParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
-         $query = "SELECT iv.img_ruta,iv.img_status,iv.img_fecha_ini
+         $query = "SELECT iv.img_ruta,iv.img_order,iv.img_status,iv.img_fecha_ini
          FROM imagen_vertical as iv INNER JOIN clientes as c ON c.cli_id=iv.cli_id
          WHERE c.cli_id=$id_cliente
          AND iv.img_status=1
          AND iv.img_fecha_ini <= '$fecha_final'
-         AND iv.img_fecha_fin >= '$fecha_inicial'";
+         AND iv.img_fecha_fin >= '$fecha_inicial'
+         ORDER BY iv.img_order ASC";
 
          $resultado = $this->SelectAll($query);
 
@@ -86,12 +88,13 @@ class Reproductor extends DB_connection
 
    function banhorizontalesParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
-         $query = "SELECT ih.imgh_ruta,ih.imgh_status,ih.imgh_fecha_ini,ih.imgh_fecha_fin
+         $query = "SELECT ih.imgh_ruta,ih.imgh_order,ih.imgh_status,ih.imgh_fecha_ini,ih.imgh_fecha_fin
          FROM imagen_horizontal as ih INNER JOIN clientes as c ON c.cli_id=ih.cli_id
          WHERE c.cli_id=$id_cliente
          AND ih.imgh_status=1
          AND ih.imgh_fecha_ini <= '$fecha_final'
-         AND ih.imgh_fecha_fin >= '$fecha_inicial'";
+         AND ih.imgh_fecha_fin >= '$fecha_inicial'
+         ORDER BY ih.imgh_order ASC";
 
          $resultado = $this->SelectAll($query);
 
@@ -116,12 +119,13 @@ class Reproductor extends DB_connection
 
    function bancompletosParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
-         $query = "SELECT ic.imgc_ruta,ic.imgc_status,ic.imgc_fecha_ini,ic.imgc_fecha_fin
+         $query = "SELECT ic.imgc_ruta,ic.imgc_status,ic.imgc_order,ic.imgc_fecha_ini,ic.imgc_fecha_fin
          FROM imagen_completa as ic INNER JOIN clientes as c ON c.cli_id=ic.cli_id
          WHERE c.cli_id=$id_cliente
          AND ic.imgc_status=1
          AND ic.imgc_fecha_ini <= '$fecha_final'
-         AND ic.imgc_fecha_fin >= '$fecha_inicial'";
+         AND ic.imgc_fecha_fin >= '$fecha_inicial'
+         ORDER BY ic.imgc_order ASC";
 
          $resultado = $this->SelectAll($query);
 
@@ -146,12 +150,13 @@ class Reproductor extends DB_connection
 
    function textosParaReproducir($id_cliente,$fecha_inicial,$fecha_final) {
       try {
-         $query = "SELECT t.text_spot,t.text_fecha_ini,t.text_fecha_fin,t.text_tipo,t.text_hora_ini,t.text_hora_fin,t.text_color,t.text_fondo_color
+         $query = "SELECT t.text_spot,t.text_fecha_ini,t.text_fecha_fin,t.text_tipo,t.text_order,t.text_hora_ini,t.text_hora_fin,t.text_color,t.text_fondo_color
          FROM texto as t INNER JOIN clientes as c ON c.cli_id=t.cli_id
          WHERE c.cli_id=$id_cliente
          AND t.text_status=1
          AND t.text_fecha_ini <= '$fecha_final'
-         AND t.text_fecha_fin >= '$fecha_inicial'";
+         AND t.text_fecha_fin >= '$fecha_inicial'
+         ORDER BY t.text_order ASC";
 
          $resultado = $this->SelectAll($query);
 

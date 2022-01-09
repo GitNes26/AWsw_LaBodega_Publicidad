@@ -1,6 +1,10 @@
 <!-- SCRIPTS -->
 <!-- JQuery 6 -->
 <script src="../Assets/Dist/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
+<!-- Popper -->
+<!-- <script type="text/javascript" src="https://unpkg.com/@popperjs/core@2"></script> -->
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script> -->
 <!-- Bootstrap 5.1.3 -->
 <script src="../Assets/Dist/Bootstrap-5.1.3/js/bootstrap.min.js"></script>
 <!-- AdminLTE-3 -->

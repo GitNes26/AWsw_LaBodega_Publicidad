@@ -96,10 +96,10 @@ class Bancompleto extends DB_connection
             "Mensaje_alerta" => 'Datos incorrectos.',
          );
          // $cantidad = $this->contarBancompletosActivos()+1;
-         $cantidad = $this->contarBancompletosActivosPorCliente($ubicacion)+1;
+         $orden = $this->contarRegistrosActivosPorCliente($ubicacion)+1;
 
          $query = "INSERT INTO imagen_completa (cli_id,imgc_ruta,imgc_tipo,imgc_order,imgc_fecha_ini,imgc_fecha_fin,imgc_status) VALUES (?,?,?,?,?,?,?)";
-         $this->ExecuteQuery($query, array($ubicacion,$ruta,$tipo,$cantidad,$fecha_inicial,$fecha_final,$status));
+         $this->ExecuteQuery($query, array($ubicacion,$ruta,$tipo,$orden,$fecha_inicial,$fecha_final,$status));
          $respuesta = array(
             "Resultado" => 'correcto',
             "Icono_alerta" => 'success',
@@ -132,11 +132,11 @@ class Bancompleto extends DB_connection
          if ($asignar_orden > 0) {
             if ($asignar_orden == 1) {
                // $orden = $this->contarBancompletosActivos()+1; 
-               $orden = $this->contarBancompletosActivosPorCliente($ubicacion)+1; 
+               $orden = $this->contarRegistrosActivosPorCliente($ubicacion)+1; 
 
                if ($ruta == "") { //si no se desea editar/cambiar la imagen
-                  $query = "UPDATE imagen_completa SET cli_id=?, imgc_tipo=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
-                  $this->ExecuteQuery($query,array($ubicacion,$tipo,$orden,$fecha_inicial,$fecha_final,$status,$id));
+                  $query = "UPDATE imagen_completa SET cli_id=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
+                  $this->ExecuteQuery($query,array($ubicacion,$orden,$fecha_inicial,$fecha_final,$status,$id));
                } else {
                   $query = "UPDATE imagen_completa SET cli_id=?, imgc_ruta=?, imgc_tipo=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
                   $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$orden,$fecha_inicial,$fecha_final,$status,$id));
@@ -145,8 +145,8 @@ class Bancompleto extends DB_connection
                $orden = $asignar_orden;
 
                if ($ruta == "") { //si no se desea editar/cambiar la imagen
-                  $query = "UPDATE imagen_completa SET cli_id=?, imgc_tipo=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
-                  $this->ExecuteQuery($query,array($ubicacion,$tipo,$orden,$fecha_inicial,$fecha_final,$status,$id));
+                  $query = "UPDATE imagen_completa SET cli_id=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
+                  $this->ExecuteQuery($query,array($ubicacion,$orden,$fecha_inicial,$fecha_final,$status,$id));
                } else {
                   $query = "UPDATE imagen_completa SET cli_id=?, imgc_ruta=?, imgc_tipo=?, imgc_order=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
                   $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$orden,$fecha_inicial,$fecha_final,$status,$id));
@@ -154,8 +154,8 @@ class Bancompleto extends DB_connection
             }
          } else {            
             if ($ruta == "") { //si no se desea editar/cambiar la imagen
-               $query = "UPDATE imagen_completa SET cli_id=?, imgc_tipo=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
-               $this->ExecuteQuery($query,array($ubicacion,$tipo,$fecha_inicial,$fecha_final,$status,$id));
+               $query = "UPDATE imagen_completa SET cli_id=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
+               $this->ExecuteQuery($query,array($ubicacion,$fecha_inicial,$fecha_final,$status,$id));
             } else {
                $query = "UPDATE imagen_completa SET cli_id=?, imgc_ruta=?, imgc_tipo=?, imgc_fecha_ini=?, imgc_fecha_fin=?, imgc_status=? WHERE imgc_id=?";
                $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$id));
@@ -192,14 +192,8 @@ class Bancompleto extends DB_connection
          $query = "DELETE FROM imagen_completa WHERE imgc_id=?";
          $this->ExecuteQueryContinuous($query,array($id));
 
-         //eliminar el archivo
-         $ruta = explode("../",$path_a_eliminar);
-         $ruta = trim(end($ruta));
-         $cantidad_mismo_path = (int)$this->contarRegistrosConLaMismaRuta($ruta);
-         if ($cantidad_mismo_path < 1) { // Si no hay más imagenes con el mismo path (misma imagen) eliminar archivo.
-            @unlink($path_a_eliminar);
-         }
-         //eliminar el archivo
+         //eliminar el archivo | eliminara el archivo si no hay otro registro con la misma ruta
+         $this->eliminarArchivo($path_a_eliminar);
 
          $respuesta = array(
             "Resultado" => 'correcto',
@@ -230,14 +224,8 @@ class Bancompleto extends DB_connection
          $query = "UPDATE imagen_completa SET imgc_ruta='', imgc_tipo='' WHERE imgc_id=?";
          $this->ExecuteQueryContinuous($query,array($id));
          
-         //eliminar el archivo
-         $ruta = explode("../",$path_a_eliminar);
-         $ruta = trim(end($ruta));
-         $cantidad_mismo_path = (int)$this->contarRegistrosConLaMismaRuta($ruta);
-         if ($cantidad_mismo_path < 1) { // Si no hay más imagenes con el mismo path (misma imagen) eliminar archivo.
-            @unlink($path_a_eliminar);
-         }
-         //eliminar el archivo
+         //eliminar el archivo | eliminara el archivo si no hay otro registro con la misma ruta
+         $this->eliminarArchivo($path_a_eliminar);
 
          $respuesta = array(
             "Resultado" => 'correcto',
@@ -258,6 +246,15 @@ class Bancompleto extends DB_connection
 
 
    //FUNCIONES EXTRAS
+   function eliminarArchivo($path_a_eliminar) {
+      $ruta = explode("../",$path_a_eliminar);
+      $ruta = trim(end($ruta));
+      $cantidad_mismo_path = (int)$this->contarRegistrosConLaMismaRuta($ruta);
+      if ($cantidad_mismo_path < 1) { // Si no hay más imagenes con el mismo path (misma imagen) eliminar archivo.
+         @unlink($path_a_eliminar);
+      }
+   }
+
    function actualizarStatus($query,$ids) {
       try {
          $respuesta = array(
@@ -328,7 +325,7 @@ class Bancompleto extends DB_connection
          echo "Error: ".$e->getMessage();
       }
    }
-   function contarBancompletosActivosPorCliente($ubicacion) {
+   function contarRegistrosActivosPorCliente($ubicacion) {
       try {
          $query = "SELECT COUNT(*) as cantidad FROM imagen_completa WHERE imgc_status=1 AND cli_id=$ubicacion";
          $resultado = $this->SelectOnlyOneContinuous($query);

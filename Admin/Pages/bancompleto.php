@@ -36,46 +36,51 @@ $Cliente = new Cliente();
             <table id="tabla_bancompletos" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
-                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
                      <th>Orden</th>
+                     <!-- <th>ID</th> -->
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </thead>
-               <tbody>
+               <tbody hidden>
                   <?php
                   $activos = 0;
                   error_reporting(0);
                   foreach ($Bancompleto->mostrarBancompletos() as $objBancompleto) {
                      $imgc_id = $objBancompleto['imgc_id'];
+                     $nom_empresa = $objBancompleto['cli_nom_empresa'];
                      $cli_id = $objBancompleto['cli_id'];
+                     $fecha_ini = $objBancompleto['imgc_fecha_ini'];
+                     $fecha_fin = $objBancompleto['imgc_fecha_fin'];
+                     $ruta = $objBancompleto['imgc_ruta'];
                      $orden = $objBancompleto['imgc_order'];
                      $clases_handle = "handle";
+                     $status = $objBancompleto['imgc_status'];
+                     $td_activo = $status == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgc_id' data-status='$status' data-fecha-final='$fecha_fin'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgc_id' data-status='$status' data-fecha-final='$fecha_fin'></i>";
+                     
+                     if ($status == false ) {$orden = 1000000;}
                      if ($orden == 1000000) { $clases_handle = "text-muted"; $orden = ""; }
-                     $activo = $objBancompleto['imgc_status'];
-                     $td_activo = $activo == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$imgc_id' data-status='$objBancompleto[imgc_status]' data-fecha-final='$objBancompleto[imgc_fecha_fin]'></i>";
-
-                     if ($activo == true ) {$activos += 1;}
 
                      echo  "
                         <tr data-id='$imgc_id'>
                            <!-- <td class='align-middle'>$imgc_id</td> -->
-                           <td class='align-middle'>$objBancompleto[cli_nom_empresa]</td>
-                           <td class='align-middle td_fecha_inicial'>$objBancompleto[imgc_fecha_ini]</td>
-                           <td class='align-middle td_fecha_final'>$objBancompleto[imgc_fecha_fin]</td>
+                           <td class='align-middle'>$nom_empresa</td>
+                           <td class='align-middle td_fecha_inicial'>$fecha_ini</td>
+                           <td class='align-middle td_fecha_final'>$fecha_fin</td>
                            <td class='align-middle'>
-                              <img src='../$objBancompleto[imgc_ruta]' width='50' preload='true'></img>
-                              </td>
-                              <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$imgc_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
-                              <td class='align-middle'>$td_activo</td>
+                              <img src='../$ruta' class='img-fluid rounded shadow tooltip_imagen tt_bancompleto' data-id='$imgc_id'></img>
+                              <img src='../$ruta' width='50' preload='true' class='td_img' data-id='$imgc_id'></img>
+                           </td>
+                           <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$imgc_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
+                           <td class='align-middle'>$td_activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objBancompleto[imgc_id]' data-status-actual='$objBancompleto[imgc_status]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$imgc_id' data-status-actual='$status'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
                               <span class='mx-md-2'></span>
-                              <button class='btn btn-danger btn_eliminar' data-id='$objBancompleto[imgc_id]' data-nombre='$objBancompleto[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
+                              <button class='btn btn-danger btn_eliminar' data-id='$imgc_id' data-nombre='$nom_empresa'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>
                      ";
@@ -85,13 +90,13 @@ $Cliente = new Cliente();
                </tbody>
                <tfoot>
                   <tr class="thead-dark">
-                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Imagen</th>
-                     <th>Activo</th>
                      <th>Orden</th>
+                     <!-- <th>ID</th> -->
+                     <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
                </tfoot>

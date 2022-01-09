@@ -57,3 +57,38 @@ $("#btn_cerrar_sesion").click((e) => {
       }
    })
 });
+
+//Mostrar imagen en grande en hover
+$(`.tooltip_imagen`).fadeOut(1);
+$(`.tooltip_video`).fadeOut(1);
+
+$(".td_img").hover(function () {
+      // over
+      // console.log("dentro");
+      let id = $(this).attr("data-id");
+      let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+      tooltip_imagen.fadeIn("fast");
+   }, function () {
+      // out
+      // console.log("fuera");
+      let id = $(this).attr("data-id");
+      let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+      tooltip_imagen.fadeOut("fast");
+   }
+);
+
+$(".td_video").hover(function () {
+   // over
+   // console.log("dentro video");
+   let id = $(this).attr("data-id");
+   let tooltip_video = $(`video[data-id='${id}'].tooltip_video`)
+   tooltip_video.fadeIn("fast");
+}, function () {
+   // out
+   // console.log("fuera video");
+   let id = $(this).attr("data-id");
+   let tooltip_video = $(`video[data-id='${id}'].tooltip_video`)
+   tooltip_video
+   tooltip_video.fadeOut("fast");
+}
+);

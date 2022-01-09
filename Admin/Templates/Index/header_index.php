@@ -18,6 +18,9 @@ if (isset($_COOKIE["bodega_sesion"])) {
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Admin | La Bodega</title>
    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+   <!-- Normalize 8.0.1 -->
+   <link rel="stylesheet" href="./Assets/Dist/Css/normalize.css">
+
 
    <!-- Google Font: Source Sans Pro -->
    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> -->

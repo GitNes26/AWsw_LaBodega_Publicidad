@@ -38,14 +38,16 @@ $Cliente = new Cliente();
          </div>
          <div class="card-body">
             <!-- tabla -->
-            <table id="tabla_videos" class="table text-center" style="width:100%">
+            <table id="tabla_videos" class="table table-hover text-center" style="width:100%">
                <thead class="thead-dark">
                   <tr>
+                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Plantilla</th>
                      <th>Video</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
@@ -55,22 +57,38 @@ $Cliente = new Cliente();
                   error_reporting(0);
                   foreach ($Video->mostrarVideos() as $objVideo) {
                      $vid_id = $objVideo['vid_id'];
+                     $nom_empresa = $objVideo['cli_nom_empresa'];
                      $cli_id = $objVideo['cli_id'];
-                     $activo = $objVideo['vid_status'] == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$vid_id' data-status='$objVideo[vid_status]' data-fecha-final='$objVideo[vid_fecha_fin]'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$vid_id' data-status='$objVideo[vid_status]' data-fecha-final='$objVideo[vid_fecha_fin]'></i>";
+                     $fecha_ini = $objVideo['vid_fecha_ini'];
+                     $fecha_fin = $objVideo['vid_fecha_fin'];
+                     $ruta = $objVideo['vid_ruta'];
+                     $orden = $objVideo['vid_order'];
+                     $clases_handle = "handle";
+                     $plantilla = $objVideo['vid_plantilla'];
+                     $status = $objVideo['vid_status'];
+                     $activo = $status == true ? "<i class='fa-regular fa-circle-check fa-2xl td_status' data-id='$vid_id' data-status='$status' data-fecha-final='$fecha_fin'></i>" : "<i class='fa-regular fa-circle-xmark fa-2xl td_status' data-id='$vid_id' data-status='$status' data-fecha-final='$fecha_fin'></i>";
+
+                     if ($status == false ) {$orden = 1000000;}
+                     if ($orden == 1000000) { $clases_handle = "text-muted"; $orden = ""; }
+                     
                      echo  "
                         <tr>
-                           <td class='align-middle'>$objVideo[cli_nom_empresa]</td>
-                           <td class='align-middle td_fecha_inicial'>$objVideo[vid_fecha_ini]</td>
-                           <td class='align-middle td_fecha_final'>$objVideo[vid_fecha_fin]</td>
-                           <td class='align-middle'>Plantilla $objVideo[vid_plantilla]</td>
+                           <!-- <td class='align-middle'>$vid_id</td> -->
+                           <td class='align-middle'>$nom_empresa</td>
+                           <td class='align-middle td_fecha_inicial'>$fecha_ini</td>
+                           <td class='align-middle td_fecha_final'>$fecha_fin</td>
+                           <td class='align-middle'>Plantilla $plantilla</td>
                            <td class='align-middle'>
-                              <video src='../$objVideo[vid_ruta]' width='50' preload='true' muted></video>
-                              </td>
+                              <video src='../$ruta' class=' rounded shadow tooltip_video tt_video' data-id='$vid_id' preload='true' autoplay loop muted></video>
+                              <video src='../$ruta' width='50' preload='true' class='td_video' data-id='$vid_id' muted></video>
+                           </td>
+                           <td class='align-middle td_orden fw-bold text-lg $clases_handle' data-id='$vid_id' data-orden='$orden'>$orden &nbsp;<i class='fa-solid fa-grip-vertical'></i></td>
+
                            <td class='align-middle'>$activo</td>
                            <td class='align-middle'>
-                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$objVideo[vid_id]'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
+                              <button class='btn btn-primary btn_editar mb-1' data-bs-toggle='modal' data-bs-target='#modal' data-id='$vid_id' data-status-actual='$status'><i class='fa-solid fa-pen-to-square fa-lg'></i></button>
                               <span class='mx-md-2'></span>
-                              <button class='btn btn-danger btn_eliminar' data-id='$objVideo[vid_id]' data-nombre='$objVideo[cli_nom_empresa]'><i class='fa-solid fa-trash-can'></i></button>
+                              <button class='btn btn-danger btn_eliminar' data-id='$vid_id' data-nombre='$nom_empresa'><i class='fa-solid fa-trash-can'></i></button>
                            </td>
                         </tr>
                      ";
@@ -79,11 +97,13 @@ $Cliente = new Cliente();
                </tbody>
                <tfoot>
                   <tr class="thead-dark">
+                     <!-- <th>ID</th> -->
                      <th>Ubicación</th>
                      <th>Fecha inicial</th>
                      <th>Fecha final</th>
                      <th>Plantilla</th>
                      <th>Video</th>
+                     <th>Orden</th>
                      <th>Activo</th>
                      <th>Editar / Eliminar</th>
                   </tr>
@@ -106,6 +126,7 @@ $Cliente = new Cliente();
                   <form id="formulario_modal" enctype="multipart/form-data">
                      <input type="hidden" id="accion" name="accion">
                      <input type="hidden" id="id" name="id" value=''>
+                     <input type="hidden" id="status_actual" name="status_actual" value=''>
                      <div class="mb-3">
                         <label for="input_ubicacion" class="form-label">Ubicación:</label>
                         <select class="select2 form-control" style="width:100%" aria-label="Default select example" id="input_ubicacion" name="input_ubicacion">
@@ -144,7 +165,7 @@ $Cliente = new Cliente();
                      <!-- DIV VIDEO CARGADO -->
                      <div class="mb-3" id="div_archivo_cargado">
                         <label for="ver_archivo" class="form-label">Video cargado:</label>
-                        <video src="<?php echo "../$objVideo[vid_ruta]" ?>" controls preview="true" class="" id="ver_archivo" width="100%" muted></video>
+                        <video src="<?php echo "../$ruta" ?>" controls preview="true" class="" id="ver_archivo" width="100%" muted></video>
                         <button type="button" id="btn_quitar_archivo" class="btn btn-default btn-block">QUITAR VIDEO</button>
                      </div>
                      <!-- DIV VIDEO CARGADO -->

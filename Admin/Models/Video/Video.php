@@ -56,9 +56,32 @@ class Video extends DB_connection
 
    function mostrarVideos() {
       try {
-         $query = "SELECT c.cli_id,v.vid_id,c.cli_nom_empresa,v.vid_fecha_ini,v.vid_fecha_fin,v.vid_plantilla,v.vid_ruta,v.vid_status FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id ORDER BY v.vid_id DESC";
+         $query = "SELECT c.cli_id,v.vid_id,c.cli_nom_empresa,v.vid_fecha_ini,v.vid_fecha_fin,v.vid_plantilla,v.vid_ruta,v.vid_status,v.vid_order FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id ORDER BY v.vid_order ASC";
          $resultado = $this->MostrarEnHTML($query);
          if (sizeof($resultado) > 0) { return $resultado; }
+
+      } catch (Exception $e) {
+         echo "Error: ".$e->getMessage();
+      }
+   }
+   function mostrarVideosPorCliente($id_cliente) {
+      try {
+         $query = "SELECT c.cli_id,v.vid_id,c.cli_nom_empresa,v.vid_fecha_ini,v.vid_fecha_fin,v.vid_plantilla,v.vid_ruta,v.vid_status,v.vid_order FROM video as v INNER JOIN clientes as c ON c.cli_id=v.cli_id WHERE v.cli_id=$id_cliente ORDER BY v.vid_order ASC";
+         $resultado = $this->SelectAll($query);
+         if (sizeof($resultado) > 0) { 
+            $respuesta = array(
+            "Resultado" => "correcto",
+            "Mensaje_alerta" => "Datos encontrados.",
+            "Datos" => $resultado
+            );
+         } else {
+            $respuesta = array(
+               "Resultado" => "correcto",
+               "Mensaje_alerta" => "Sin resultados.",
+               "Datos" => array(),
+               );
+         }
+         die (json_encode($respuesta));
 
       } catch (Exception $e) {
          echo "Error: ".$e->getMessage();
@@ -73,9 +96,10 @@ class Video extends DB_connection
             "Titulo_alerta" => 'Opps...!',
             "Mensaje_alerta" => 'Datos incorrectos.',
          );
+         $orden = $this->contarRegistrosActivosPorCliente($ubicacion)+1;
 
-         $query = "INSERT INTO video (cli_id,vid_ruta,vid_tipo,vid_fecha_ini,vid_fecha_fin,vid_status,vid_plantilla) VALUES (?,?,?,?,?,?,?)";
-         $this->ExecuteQuery($query, array($ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla));
+         $query = "INSERT INTO video (cli_id,vid_ruta,vid_tipo,vid_order,vid_fecha_ini,vid_fecha_fin,vid_status,vid_plantilla) VALUES (?,?,?,?,?,?,?,?)";
+         $this->ExecuteQuery($query, array($ubicacion,$ruta,$tipo,$orden,$fecha_inicial,$fecha_final,$status,$plantilla));
          $respuesta = array(
             "Resultado" => 'correcto',
             "Icono_alerta" => 'success',
@@ -96,7 +120,7 @@ class Video extends DB_connection
       
    }
 
-   function editarVideo($id,$ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla){
+   function editarVideo($id,$ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla,$asignar_orden){
       try {
          $respuesta = array(
             "Resultado" => 'incorrecto',
@@ -105,12 +129,27 @@ class Video extends DB_connection
             "Mensaje_alerta" => 'Datos incorrectos.',
          );
 
-         if ($ruta == "") { //si no se desea editar/cambiar el video
-            $query = "UPDATE video SET cli_id=?, vid_tipo=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_plantilla=? WHERE vid_id=?";
-            $this->ExecuteQuery($query,array($ubicacion,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla,$id));
+         if ($asignar_orden > 0) {
+            if ($asignar_orden == 1)
+               $orden = $this->contarRegistrosActivosPorCliente($ubicacion)+1; 
+            else
+               $orden = $asignar_orden;
+
+            if ($ruta == "") { //si no se desea editar/cambiar el video
+               $query = "UPDATE video SET cli_id=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_order=?, vid_plantilla=? WHERE vid_id=?";
+               $this->ExecuteQuery($query,array($ubicacion,$fecha_inicial,$fecha_final,$status,$orden,$plantilla,$id));
+            } else {
+               $query = "UPDATE video SET cli_id=?, vid_ruta=?, vid_tipo=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_order=?, vid_plantilla=? WHERE vid_id=?";
+               $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$orden,$plantilla,$id));
+            }
          } else {
-            $query = "UPDATE video SET cli_id=?, vid_ruta=?, vid_tipo=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_plantilla=? WHERE vid_id=?";
-            $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla,$id));
+            if ($ruta == "") { //si no se desea editar/cambiar el video
+               $query = "UPDATE video SET cli_id=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_plantilla=? WHERE vid_id=?";
+               $this->ExecuteQuery($query,array($ubicacion,$fecha_inicial,$fecha_final,$status,$plantilla,$id));
+            } else {
+               $query = "UPDATE video SET cli_id=?, vid_ruta=?, vid_tipo=?, vid_fecha_ini=?, vid_fecha_fin=?, vid_status=?, vid_plantilla=? WHERE vid_id=?";
+               $this->ExecuteQuery($query,array($ubicacion,$ruta,$tipo,$fecha_inicial,$fecha_final,$status,$plantilla,$id));
+            }
          }
 
          $respuesta = array(
@@ -141,15 +180,10 @@ class Video extends DB_connection
          );
 
          $query = "DELETE FROM video WHERE vid_id=?";
-         $this->ExecuteQuery($query,array($id));
+         $this->ExecuteQueryContinuous($query,array($id));
 
-         //eliminar el archivo
-         @unlink($path_a_eliminar);
-         // if (@unlink($path_a_eliminar)) {
-         //    print("\nObjeto Video eliminado exitosamente: ".$path_a_eliminar);
-         // } else {
-         //    print("\Error al eliminar el objeto video: ".error_get_last());
-         // }
+         //eliminar el archivo | eliminara el archivo si no hay otro registro con la misma ruta
+         $this->eliminarArchivo($path_a_eliminar);
 
          $respuesta = array(
             "Resultado" => 'correcto',
@@ -178,10 +212,10 @@ class Video extends DB_connection
          );
 
          $query = "UPDATE video SET vid_ruta='', vid_tipo='' WHERE vid_id=?";
-         $this->ExecuteQuery($query,array($id));
-         
-         //eliminar el archivo
-         @unlink($path_a_eliminar);
+         $this->ExecuteQueryContinuous($query,array($id));
+
+         //eliminar el archivo | eliminara el archivo si no hay otro registro con la misma ruta
+         $this->eliminarArchivo($path_a_eliminar);
 
          $respuesta = array(
             "Resultado" => 'correcto',
@@ -202,6 +236,14 @@ class Video extends DB_connection
 
 
    //FUNCIONES EXTRAS
+   function eliminarArchivo($path_a_eliminar) {
+      $ruta = explode("../",$path_a_eliminar);
+      $ruta = trim(end($ruta));
+      $cantidad_mismo_path = (int)$this->contarRegistrosConLaMismaRuta($ruta);
+      if ($cantidad_mismo_path < 1) { // Si no hay más imagenes con el mismo path (misma imagen) eliminar archivo.
+         @unlink($path_a_eliminar);
+      }
+   }
    function actualizarStatus($query,$ids) {
       try {
          $respuesta = array(
@@ -230,5 +272,55 @@ class Video extends DB_connection
          );
       }
       die(json_encode($respuesta));
+   }
+
+   function actualizarOrden($id,$orden) {
+      try {
+         $respuesta = array(
+            "Resultado" => 'incorrecto',
+            "Icono_alerta" => 'error',
+            "Titulo_alerta" => 'Opps...!',
+            "Mensaje_alerta" => 'Datos incorrectos.',
+         );
+
+         $query = "UPDATE video SET vid_order=? WHERE vid_id=?";
+         $this->ExecuteQuery($query,array($orden,$id));
+
+         $respuesta = array(
+            "Resultado" => 'correcto',
+            "Icono_alerta" => 'success',
+            "Titulo_alerta" => 'EXITO!',
+            "Mensaje_alerta" => 'Banner horizontal orden actualizado.',
+            "Datos" => "$id",
+         );
+      } catch (Exception $e) {
+         echo "Error: ".$e->getMessage();
+         $respuesta = array(
+            "Resultado" => 'error',
+            "Icono_alerta" => 'error',
+            "Titulo_alerta" => 'Opps...!',
+            "Mensaje_alerta" => 'Ha ocurrido un erro, verifica tus datos.',
+         );
+      }
+      die(json_encode($respuesta));
+   }
+
+   function contarRegistrosActivosPorCliente($ubicacion) {
+      try {
+         $query = "SELECT COUNT(*) as cantidad FROM video WHERE vid_status=1 AND cli_id=$ubicacion";
+         $resultado = $this->SelectOnlyOneContinuous($query);
+         return $resultado["cantidad"];
+      } catch (Exception $e) {
+         echo "Error: ".$e->getMessage();
+      }
+   }
+   function contarRegistrosConLaMismaRuta($path_a_eliminar) {
+      try {
+         $query = "SELECT COUNT(*) as cantidad FROM video WHERE vid_ruta='$path_a_eliminar'";
+         $resultado = $this->SelectOnlyOne($query);
+         return $resultado["cantidad"];
+      } catch (Exception $e) {
+         echo "Error: ".$e->getMessage();
+      }
    }
 }

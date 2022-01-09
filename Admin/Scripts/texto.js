@@ -1,5 +1,10 @@
+var tabla_textos;
+tbody = $("#tabla_textos").find('tbody');
+tbody.attr("hidden", false);
+tbody.fadeOut(1);
+
 $(document).ready(() => {
-   var tabla_textos = $('#tabla_textos').DataTable({
+   tabla_textos = $('#tabla_textos').DataTable({
       "responsive": true,
       // scrollX: true,
       language: {
@@ -13,7 +18,8 @@ $(document).ready(() => {
       ],
 
       // dom: 'lfrtip',
-      dom: '<"row"<"col-md-6 "l> <"col-md-6"f> > rt <"row"<"col-md-6 "i> <"col-md-6"p> >',
+      // dom: '<"row"<"col-md-6 "l> <"col-md-6"f> > rt <"row"<"col-md-6 "i> <"col-md-6"p> >',
+      dom: '<"row"<"col-md-6 div_filtrar_cliente"> <"col-md-6"f> > rt <"row"<"col-md-6 "i> >',
       // "lengthChange": true,
       "lengthMenu": [
          [
@@ -31,10 +37,10 @@ $(document).ready(() => {
             "Todos"
          ]
       ],
-      "pageLength": 5,
-      "order": [
-         [0, 'asc']
-      ],
+      "pageLength": -1,
+      // "order": [
+      //    [0, 'asc']
+      // ],
       // buttons: [
       //     {
       //         extend: 'excel', title: 'Ventas Registradas (Relacionadas al arduino)',
@@ -51,8 +57,35 @@ $(document).ready(() => {
       // ],
       "deferRender": true,
       aaSorting: [] //deshabilitar ordenado automatico
-
    });
+   // Arrastrar renglón
+   tbody.sortable({
+      items: 'tr',
+      axis: 'y',
+      handle: '.handle',
+      placeholder: 'ui-sortable-placeholder',
+      start: function (event, ui) {
+         ui.item.addClass('ui-sortable-item');
+
+         ui.placeholder.height($(ui.item).height());
+         ui.placeholder.width($(ui.item).width());
+
+         // show all rows
+         // tabla_textos.page.len(-1).draw(false);
+
+         // refresh so that newly shown rows are counted as sortable items
+         $(this).sortable('refresh');
+
+         // sort table by sequence
+         // tabla_textos.order([4, 'asc']).draw(false);
+      },
+      sort: function (event, ui) {
+      },
+      stop: function (event, ui) {
+         enlistarOrden();
+      }
+   });
+   // Arrastrar renglón
 
    $("#seccion_promocional").slideUp("fast");
 
@@ -82,7 +115,7 @@ $(document).ready(() => {
    });
 
    //RECARGAR Y ACTUALIZAR STATUS DE LOS REGISTROS SI VENCIO SU FECHA FINAL
-   function peticionAjax(url, datos, funcion_en_success, funcion_en_complete) {
+   function peticionAjax(url, datos, funcion_en_success, funcion_en_complete, funcion_en_before) {
       if (datos == null) {
          datos = {};
       }
@@ -92,6 +125,7 @@ $(document).ready(() => {
          data: datos,
          dataType: "json",
          beforeSend: () => {
+            if (funcion_en_before == "EXPRESS") {return}
             mostrarBlockOutCargando();
          },
          success: (ajaxResponse) => {
@@ -138,7 +172,7 @@ $(document).ready(() => {
    function actualizarStatusRegistros() {
       let ids = "";
       por_actualizar = false;
-      query = "UPDATE texto SET text_status='0' WHERE text_id IN (";
+      query = "UPDATE texto SET text_status='0', text_order=1000000 WHERE text_id IN (";
       tds_status.forEach(td_status => {
          let hoy = moment().format("YYYY-MM-DD HH:mm:ss");
          let momento_actual = moment(hoy)
@@ -177,8 +211,15 @@ $(document).ready(() => {
 
          if (objResponse.includes(id_registro)) {
             td_status.setAttribute("data-status", 0);
-            td_status.classList.remove("fa-circle-check")
-            td_status.classList.add("fa-circle-xmark")
+            td_status.classList.remove("fa-circle-check");
+            td_status.classList.add("fa-circle-xmark");
+
+            // obtener su td_orden, quitarle su numero y poner su letra color muted
+            var td_orden = $(`td[data-id='${id_registro}'].td_orden`);
+            td_orden.attr("data-orden",1000000)
+            td_orden.removeClass("handle");
+            if (!td_orden.hasClass("text-muted")) {td_orden.addClass("text-muted");}
+            td_orden.html("&nbsp;<i class='fa-solid fa-grip-vertical'></i>");
          }
       });
    }
@@ -193,6 +234,7 @@ $('.select2').select2()
 
 const url_modelo_app = "../Models/Texto/App.php";
 const
+   card_body = $(".card-body"),
    btn_abrir_modal = $("#btn_abrir_modal"),
    btns_editar = document.querySelectorAll(".btn_editar"),
    btns_eliminar = document.querySelectorAll(".btn_eliminar"),
@@ -200,6 +242,7 @@ const
    formulario_modal = $("#formulario_modal"),
    accion_modal = $("#accion"),
    id = $("#id"),
+   status_actual = $("#status_actual"),
    input_ubicacion = $("#input_ubicacion"),
    input_fecha_inicial = $("#input_fecha_inicial"),
    input_fecha_final = $("#input_fecha_final"),
@@ -222,7 +265,7 @@ tds_status = document.querySelectorAll(".td_status");
 function actualizarStatusRegistros() {
    let ids = "";
    por_actualizar = false;
-   query = "UPDATE texto SET text_status='0' WHERE text_id IN (";
+   query = "UPDATE texto SET text_status='0', text_order=1000000 WHERE text_id IN (";
    tds_status.forEach(td_status => {
       let hoy = moment().format("YYYY-MM-DD HH:mm:ss");
       let momento_actual = moment(hoy)
@@ -261,8 +304,15 @@ function cambioDeEstado(ajaxResponse) {
 
       if (objResponse.includes(id_registro)) {
          td_status.setAttribute("data-status", 0);
-         td_status.classList.remove("fa-circle-check")
-         td_status.classList.add("fa-circle-xmark")
+         td_status.classList.remove("fa-circle-check");
+         td_status.classList.add("fa-circle-xmark");
+
+         // obtener su td_orden, quitarle su numero y poner su letra color muted
+         var td_orden = $(`td[data-id='${id_registro}'].td_orden`);
+         td_orden.attr("data-orden",1000000)
+         td_orden.removeClass("handle");
+         if (!td_orden.hasClass("text-muted")) {td_orden.addClass("text-muted");}
+         td_orden.html("&nbsp;<i class='fa-solid fa-grip-vertical'></i>");
       }
    });
 }
@@ -274,7 +324,7 @@ setInterval(() => {
 
 
 /* --- FUNCIONES DE CAJON--- */
-function peticionAjax(url, datos, funcion_en_success, funcion_en_complete) {
+function peticionAjax(url, datos, funcion_en_success, funcion_en_complete,funcion_en_before) {
    if (datos == null) {
       datos = {};
    }
@@ -284,6 +334,7 @@ function peticionAjax(url, datos, funcion_en_success, funcion_en_complete) {
       data: datos,
       dataType: "json",
       beforeSend: () => {
+         if (funcion_en_before == "EXPRESS") {return}
          mostrarBlockOutCargando();
       },
       success: (ajaxResponse) => {
@@ -514,6 +565,7 @@ btn_abrir_modal.click((e) => {
    formulario_modal[0].reset();
    modal_title.html("<i class='fa-solid fa-terminal'></i>&nbsp; AGREGAR TEXTO</h5>");
    accion_modal.val("crear_texto");
+   status_actual.val("");
    btn_enviar_formulario.text("AGREGAR");
    setTimeout(() => {
       input_ubicacion.focus();
@@ -576,6 +628,23 @@ formulario_modal.on("submit",(e) => {
 
    datos = formulario_modal.serializeArray();
    agregarDatoAlArray("input_texto",input_texto.val(),datos);
+   let status_activo = false;
+   datos.forEach(dato => {
+      if (dato.name == "input_status") {
+         status_activo = true;
+         if (status_actual.val() == 1)
+            agregarDatoAlArray("asignar_orden",-1,datos); // no hubo cambio, conservar su posicion
+         else
+            agregarDatoAlArray("asignar_orden",1,datos); // hubo cambio, asignar posicion
+      }
+   });
+   if (!status_activo) {
+      if (status_actual.val() == 1)
+         agregarDatoAlArray("asignar_orden",1000000,datos); // hubo cambio, asignar posicion 1000000=NULL
+      else
+         agregarDatoAlArray("asignar_orden",-1,datos); // no hubo cambio, conserva posicion NULL
+   }
+   // console.log(status_actual.val());
    // return console.log(datos);
    peticionAjax(url_modelo_app,datos,textoRegistradoEditado,"sin funcion complete");
 })
@@ -595,8 +664,9 @@ function textoRegistradoEditado(ajaxResponse) {
 
 //ABRIR MODAL PARA EDITAR
 btns_editar.forEach((btn_editar) => {
-   accion_modal.val("editar_texto");
    btn_editar.addEventListener('click',() => {
+      accion_modal.val("editar_texto");
+      status_actual.val(btn_editar.getAttribute("data-status-actual"));
       modal_title.html("<i class='fa-solid fa-terminal'></i>&nbsp; EDITAR TEXTO</h5>");
       btn_enviar_formulario.text("GUARDAR");
 
@@ -640,7 +710,7 @@ function establecerValorSelect2(objResponse) {
    datos = {
       accion: "mostrar_clientes_ajax"
    }
-   peticionAjax(`../Models/Cliente/App.php`,datos,rellenarSelect2Ubicacion,"sin funcion complete");   
+   peticionAjax(url_modelo_app_cliente,datos,rellenarSelect2Ubicacion,"sin funcion complete");   
 }
 function rellenarSelect2Ubicacion(ajaxResponse) {
    objResponse = ajaxResponse.Datos;
@@ -662,3 +732,74 @@ btns_eliminar.forEach((btn_eliminar) => {
       mostrarAlertaConOpciones(titulo,texto,datos,true,null);
    })
 });
+
+
+//SELECTOR DE CLIENTES
+let div_filtrar_cliente;
+const url_modelo_app_cliente = "../Models/Cliente/App.php"
+setTimeout(() => {
+   div_filtrar_cliente = $(".div_filtrar_cliente");
+   crearSelectorFiltroCliente();
+}, 1000);
+
+function crearSelectorFiltroCliente() {
+   let datos = {accion: "mostrar_clientes_ajax"}
+   peticionAjax(url_modelo_app_cliente,datos,rellenarFiltroClientes,"sin funcion complete","EXPRESS");
+}
+function rellenarFiltroClientes(ajaxResponse) {
+   objResponse = ajaxResponse.Datos;
+   input_select = `
+   <div class='row align-items-center'>
+      <span class='col-auto'>
+         Cliente:
+      </span>
+      <div class='col'>
+         <select class='form-select select_filtro_cliente' style='width: 100' id='select_filtro_cliente'>`;
+            objResponse.forEach(objeto => {
+            input_select += `<option>${objeto.cli_nom_empresa}</option>`;
+            // input_select += `<option value='${objeto.cli_id}'>${objeto.cli_nom_empresa}</option>`;
+            });
+         input_select += `   
+         </select>
+      </div>
+   </div>
+   `;
+   div_filtrar_cliente.html(input_select);
+   
+   //Mostrar registros por el primer cliente
+   let select_cliente = $("#select_filtro_cliente");
+   let cliente = select_cliente.val();
+   tabla_textos.columns(0).search(cliente).draw();
+   enlistarOrden();
+   tbody.fadeIn();
+}
+card_body.click((e) => {
+   if (e.target.id == "select_filtro_cliente") {
+      select_cliente = $(e.target);
+      select_cliente.change(() => {
+         let cliente = select_cliente.val();
+         // console.log(cliente);
+         tabla_textos.columns(0).search(cliente).draw();
+      });
+   }
+});
+function enlistarOrden() {
+   orden = 1;
+   tbody.find("td.handle").each(function () {
+      let td_handle = $(this);
+      td_handle.attr("data-orden",orden);
+      td_handle.html(`${orden} &nbsp;<i class='fa-solid fa-grip-vertical'></i>`);
+      let id_td = td_handle.attr("data-id");
+      let orden_td = td_handle.attr("data-orden")
+         
+      datos = {
+         accion: "actualizar_orden",
+         id: id_td,
+         orden: orden_td,
+         actualizar: moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+      peticionAjax(url_modelo_app,datos,null,"sin funcion complete","EXPRESS")
+      orden++;
+      // console.log("orden "+orden);
+   });
+}

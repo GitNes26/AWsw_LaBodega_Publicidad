@@ -1,5 +1,8 @@
 var tabla_bancompletos;
 tbody = $("#tabla_bancompletos").find('tbody');
+tbody.attr("hidden", false);
+tbody.fadeOut(1);
+// $(`.tooltip_imagen`).fadeOut(1);
 
 $(document).ready(() => {
    var dragSrc = null;  //Seguimiento global de la celda de origen
@@ -27,7 +30,7 @@ $(document).ready(() => {
 
       // dom: 'lfrtip',
       // dom: '<"row"<"col-md-4 "l> <"col-md-4 div_filtrar_cliente"> <"col-md-4"f> > rt <"row"<"col-md-6 "i> <"col-md-6"p> >',
-      dom: '<"row"<"col-md-6 div_filtrar_cliente"> <"col-md-6"f> > rt <"row"<"col-md-6 "i> <"col-md-6"p> >',
+      dom: '<"row"<"col-md-6 div_filtrar_cliente"> <"col-md-6"f> > rt <"row"<"col-md-6 "i> >',
       // "lengthChange": true,
       "lengthMenu": [
          [
@@ -103,29 +106,7 @@ $(document).ready(() => {
       sort: function (event, ui) {
       },
       stop: function (event, ui) {
-         // ids = [];
-         // orden_array = [];
-         orden = 1;
-         console.log("soltó");
-
-         $(this).find("td.handle").each(function () {
-            let td_handle = $(this);
-            td_handle.attr("data-orden",orden);
-            td_handle.html(`${orden} &nbsp;<i class='fa-solid fa-grip-vertical'></i>`);
-            let id_td = td_handle.attr("data-id");
-            let orden_td = td_handle.attr("data-orden")
-               
-            datos = {
-               accion: "actualizar_orden",
-               id: id_td,
-               orden: orden_td,
-               actualizar: moment().format("YYYY-MM-DD HH:mm:ss")
-            }
-            peticionAjax(url_modelo_app,datos,null,"sin funcion complete","EXPRESS")
-            orden++;
-            // console.log("orden "+orden);
-         });
-
+         enlistarOrden();
       }
    });
    // Arrastrar renglón
@@ -335,8 +316,10 @@ $(document).ready(() => {
             td_status.classList.add("fa-circle-xmark");
 
             // obtener su td_orden, quitarle su numero y poner su letra color muted
-            td_orden = $(`td[data-id='${id_registro}'].td_orden`);
-            td_orden.classList.add("text-muted");
+            var td_orden = $(`td[data-id='${id_registro}'].td_orden`);
+            td_orden.attr("data-orden",1000000)
+            td_orden.removeClass("handle");
+            if (!td_orden.hasClass("text-muted")) {td_orden.addClass("text-muted");}
             td_orden.html("&nbsp;<i class='fa-solid fa-grip-vertical'></i>");
          }
       });
@@ -388,7 +371,7 @@ tds_status = document.querySelectorAll(".td_status");
 function actualizarStatusRegistros() {
    let ids = "";
    por_actualizar = false;
-   query = "UPDATE imagen_completa SET imgc_status='0' WHERE imgc_id IN (";
+   query = "UPDATE imagen_completa SET imgc_status='0', imgc_order=1000000 WHERE imgc_id IN (";
    tds_status.forEach(td_status => {
       let hoy = moment().format("YYYY-MM-DD HH:mm:ss");
       let momento_actual = moment(hoy)
@@ -431,8 +414,10 @@ function cambioDeEstado(ajaxResponse) {
          td_status.classList.add("fa-circle-xmark");
 
          // obtener su td_orden, quitarle su numero y poner su letra color muted
-         td_orden = $(`td[data-id='${id_registro}'].td_orden`);
-         td_orden.classList.add("text-muted");
+         var td_orden = $(`td[data-id='${id_registro}'].td_orden`);
+         td_orden.attr("data-orden",1000000)
+         td_orden.removeClass("handle");
+         if (!td_orden.hasClass("text-muted")) {td_orden.addClass("text-muted");}
          td_orden.html("&nbsp;<i class='fa-solid fa-grip-vertical'></i>");
       }
    });
@@ -840,7 +825,6 @@ formulario_modal.on("submit",(e) => {
          }
       });
       if (!status_activo) {
-         console.log("no existe");
          if (status_actual.val() == 1)
             agregarDatoAlArray("asignar_orden",1000000,datos); // hubo cambio, asignar posicion 1000000=NULL
          else
@@ -855,7 +839,7 @@ formulario_modal.on("submit",(e) => {
          validar_campo = validarInput(input_archivo,"ARCHIVO");
          if (!validar_campo) return;
          validar_peso_archivo = validarTamanioMaxDelArchivo($("#input_archivo")[0].files[0].size);
-      if (!validar_peso_archivo) return;
+         if (!validar_peso_archivo) return;
          //Regresamos a crear el FormData para que recoja el inpur File ya con los datos agregados o editados
          datos = new FormData(formulario_modal[0]);
          // return console.log(...datos);
@@ -871,16 +855,16 @@ formulario_modal.on("submit",(e) => {
             if (dato[0] == "input_status") {
                status_activo = true;
                if (status_actual.val() == 1)
-                  datos.append("asignar_orden",false); // no hubo cambio, conservar su posicion
+                  datos.append("asignar_orden",-1); // no hubo cambio, conservar su posicion
                else
-                  datos.append("asignar_orden",true); // hubo cambio, asignar posicion
+                  datos.append("asignar_orden",1); // hubo cambio, asignar posicion
             }
          });
          if (!status_activo) {
             if (status_actual.val() == 1)
                datos.append("asignar_orden",1000000); // hubo cambio, asignar posicion 1000000=NULL
             else
-               datos.append("asignar_orden",false); // no hubo cambio, conserva posicion NULL
+               datos.append("asignar_orden",-1); // no hubo cambio, conserva posicion NULL
          }
          // return console.log(...datos);
 
@@ -944,7 +928,7 @@ function establecerValorSelect2(objResponse) {
    datos = {
       accion: "mostrar_clientes_ajax"
    }
-   peticionAjax(`../Models/Cliente/App.php`,datos,rellenarSelect2Ubicacion,"sin funcion complete");   
+   peticionAjax(url_modelo_app_cliente,datos,rellenarSelect2Ubicacion,"sin funcion complete");   
 }
 function rellenarSelect2Ubicacion(ajaxResponse) {
    objResponse = ajaxResponse.Datos;
@@ -1002,6 +986,8 @@ function rellenarFiltroClientes(ajaxResponse) {
    </div>
    `;
    div_filtrar_cliente.html(input_select);
+
+   //Mostrar registros por el primer cliente
    let select_cliente = $("#select_filtro_cliente");
    //Consulta para mostrar registros segun cliente
    let datos = {accion:"mostrar_bancompletos_cliente", id_cliente:Number($("#select_filtro_cliente").val())}
@@ -1009,12 +995,14 @@ function rellenarFiltroClientes(ajaxResponse) {
    // peticionAjax(url_modelo_app,datos,mostrarRegistrosPorCliente,"sin funcion complete","EXPRESS");
    let cliente = select_cliente.val();
    tabla_bancompletos.columns(0).search(cliente).draw();
+   enlistarOrden();
+   tbody.fadeIn();
 }
 function mostrarRegistrosPorCliente(ajaxResponse) {
    objResponse = ajaxResponse.Datos;
    tabla_bancompletos.clear().draw();
 
-   console.log(objResponse);
+   // console.log(objResponse);
    objResponse.forEach(objeto => {
       let imgc_id = objeto.imgc_id;
       let cli_id = objeto.cli_id;
@@ -1032,7 +1020,7 @@ function mostrarRegistrosPorCliente(ajaxResponse) {
 
       // ]).draw()
 
-      console.log(imgc_id,cli_id);
+      // console.log(imgc_id,cli_id);
 
    });
 }
@@ -1041,9 +1029,58 @@ card_body.click((e) => {
       select_cliente = $(e.target);
       select_cliente.change(() => {
          let cliente = select_cliente.val();
-         console.log(cliente);
+         // console.log(cliente);
          tabla_bancompletos.columns(0).search(cliente).draw();
       });
    }
 });
+function enlistarOrden() {
+   orden = 1;
+   tbody.find("td.handle").each(function () {
+      let td_handle = $(this);
+      td_handle.attr("data-orden",orden);
+      td_handle.html(`${orden} &nbsp;<i class='fa-solid fa-grip-vertical'></i>`);
+      let id_td = td_handle.attr("data-id");
+      let orden_td = td_handle.attr("data-orden")
+         
+      datos = {
+         accion: "actualizar_orden",
+         id: id_td,
+         orden: orden_td,
+         actualizar: moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+      peticionAjax(url_modelo_app,datos,null,"sin funcion complete","EXPRESS")
+      orden++;
+      // console.log("orden "+orden);
+   });
+}
 
+//Mostrar imagen en grande en hover
+// $(".td_img").hover(function () {
+//       // over
+//       let id = $(this).attr("data-id");
+//       let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+//       tooltip_imagen.fadeIn("fast");
+//    }, function () {
+//       // out
+//       let id = $(this).attr("data-id");
+//       let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+//       tooltip_imagen.fadeOut("fast");
+//    }
+// );
+// $(".td_img").mouseenter(function () { 
+//       // over
+//       // console.log("dentro");
+//       let id = $(this).attr("data-id");
+//       let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+//       tooltip_imagen.fadeIn("fast");
+//       // console.log(tooltip_imagen);
+// });
+// $(".tooltip_imagen").mouseleave(function () {
+//    // out
+//    // console.log("fuera div");
+//    let id = $(this).attr("data-id");
+//    let tooltip_imagen = $(`img[data-id='${id}'].tooltip_imagen`)
+//    tooltip_imagen.fadeOut("fast");
+//    // console.log(tooltip_imagen);
+// });
