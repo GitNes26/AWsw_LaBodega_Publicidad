@@ -64,7 +64,7 @@ if (isset($_COOKIE["bodega_sesion"])) {
     </div>
     <!-- /.login-box -->
 
-    <footer class="footer-login mt-5">
+    <footer class="footer-login mt-5 text-center">
         <p><b>AW Software</b> | 2021</p>
     </footer>
 
