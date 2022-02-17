@@ -15,7 +15,7 @@ if (isset($_COOKIE["bodega_sesion"])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | La Bodega</title>
-    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="bodega_favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
     <!-- JQuery 6 -->
     <script src="<?php echo($DIST_PATH) ?>/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,7 +33,7 @@ if (isset($_COOKIE["bodega_sesion"])) {
     <div class="login-box">
         <div class="login-logo">
             <span class="fw-bold h1">PUBLICIDAD</span>
-            <img src="favicon.png" alt='La Bodega Logo' class='img-fluid' style="width: auto" />
+            <img src="bodega_favicon.png" alt='La Bodega Logo' class='img-fluid' style="width: auto" />
         </div>
         <!-- /.login-logo -->
         <div class="card rounded-3 card-outline card-success shadow">

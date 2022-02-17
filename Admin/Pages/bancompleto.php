@@ -142,6 +142,17 @@ $Cliente = new Cliente();
                      <div class="mb-3" id="div_cargar_archivo">
                         <label for="input_archivo" class="form-label">Cargar banner completo:</label>
                         <input class="form-control" type="file" id="input_archivo" name="input_archivo" accept="image/*">
+                        <span class="">Repetir: <input type="number" name="cantidad_archivo" id="cantidad_archivo" class=" fw-bold" min="1" value="1"></span>
+
+                        <div class="form-text">Subir archivo con un peso máximo de <b id="peso_archivo"></b><b>MB</b>.</div>
+                     </div>
+                     <!-- DIV CARGAR IMAGENES -->
+                     <div class="mb-3" id="div_cargar_archivos">
+                        <label for="input_archivos" class="form-label">Cargar banners completos:</label>
+                        <div class="input-group">
+                           <input class="form-control form-control-lg" type="file" id="input_archivos" name="input_archivos[]" multiple accept="image/*">
+                           <span class="input-group-text"><input type="number" name="cantidad_archivos" id="cantidad_archivos" class="form-control form-control-sm fw-bold" min="1" value="1"></span>
+                        </div>
                         <div class="form-text">Subir archivo con un peso máximo de <b id="peso_archivo"></b><b>MB</b>.</div>
                      </div>
                      <!-- DIV CARGAR IMAGEN -->

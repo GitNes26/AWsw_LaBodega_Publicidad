@@ -108,4 +108,9 @@ class DB_connection {
       $id = $this->dbh->lastInsertId();
       return $id;
    }
+   
+   //Cerrar conexión
+   function conectionClose() {
+      $this->dbh = null;
+   }
 }

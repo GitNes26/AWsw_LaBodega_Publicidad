@@ -17,7 +17,7 @@ if (isset($_COOKIE["bodega_sesion"])) {
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Admin | La Bodega</title>
-   <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+   <link href="../bodega_favicon.ico" rel="shortcut icon" type="image/x-icon" />
    <!-- Normalize 8.0.1 -->
    <link rel="stylesheet" href="./Assets/Dist/Css/normalize.css">
 

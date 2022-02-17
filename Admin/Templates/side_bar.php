@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
    <!-- Brand Logo -->
    <a href="../" class="brand-link">
-      <img src="../../favicon.png" alt="Logo" class="brand-image img-fluid" style="opacity: .8">
+      <img src="../../bodega_favicon.png" alt="Logo" class="brand-image img-fluid" style="opacity: .8">
    </a>
 
    <?php

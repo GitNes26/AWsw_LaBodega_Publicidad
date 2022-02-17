@@ -31,7 +31,7 @@ $(document).ready(() => {
             "Todos"
          ]
       ],
-      "pageLength": 5,
+      "pageLength": 10,
       "order": [
          [0, 'asc']
       ],
