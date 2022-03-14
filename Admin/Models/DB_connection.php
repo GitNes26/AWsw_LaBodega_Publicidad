@@ -4,7 +4,7 @@ class DB_connection {
    //CONFIGURACION DE CONEXION A LA BD
    function __construct() {
       // $dsn = "mysql:host=awstorreoncom2.ipowermysql.com;dbname=bd_bodega;charset=utf8";
-      $dsn = "mysql:host=localhost;dbname=aws_bd_publicidad_labodega;charset=utf8";
+      $dsn = "mysql:host=localhost;dbname=aws_publicidad;charset=utf8";
       $options = [
          PDO::ATTR_EMULATE_PREPARES    => false,
          PDO::ATTR_EMULATE_PREPARES    => true,
